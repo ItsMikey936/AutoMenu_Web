@@ -1,4 +1,4 @@
 {
-  "buildCommand": "bun run build",
+  "buildCommand": "node build.mjs",
   "outputDirectory": "dist"
 }
