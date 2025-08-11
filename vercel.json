@@ -1,4 +1,4 @@
 {
-  "buildCommand": "npx astro build",
+  "buildCommand": "pnpm astro build",
   "outputDirectory": "dist"
 }
