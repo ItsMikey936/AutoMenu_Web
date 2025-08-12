@@ -219,7 +219,7 @@ import "../../styles/global.css";
           return `<div class="ingredient-item">
             <div class="ingredient-bullet bullet-${ing.tipoId}" style="background-color: ${colores[ing.tipoId] || '#6b7280'}"></div>
             <span class="ingredient-name tipo-${ing.tipoId}" style="color: ${colores[ing.tipoId] || '#6b7280'}; font-weight: 600;" title="${ing.ingType_Name}">
-              ${ing.nombre_Ingrediente}
+              ${ing.nombre_Ingrediente}  ${ing.porcion_Ingrediente} ${ing.unidad_Ingrediente}
             </span>
           </div>`;
         }).join('');
