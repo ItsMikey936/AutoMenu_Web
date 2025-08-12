@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@libsql/client": "^0.15.10",
+    "@libsql/kysely-libsql": "^0.4.1",
     "@tailwindcss/vite": "^4.1.11",
     "astro": "^5.12.3",
     "dotenv": "^17.2.1",
-    "kleur": "^4.1.5"
+    "kleur": "^4.1.5",
+    "kysely": "^0.28.5"
   },
   "devDependencies": {
     "@types/node": "^24.2.1",

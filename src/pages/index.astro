@@ -1,23 +1,23 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Vegetales from "../components/ingTypes/vegetables.astro";
+import { db } from '../lib/db';
+import Vegetables from "../components/ingTypes/vegetables.astro";
 
-const response = await fetch('http://localhost:4321/api/ingredientes');
-const ingredientesPorTipo = await response.json();
 ---
 
 <Layout>
   <section class="p-6">
     <h2 class="text-2xl font-bold mb-6 text-center">Selecciona tus ingredientes</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <Vegetales ingredientes={ingredientesPorTipo[1]} />
       <!-- Agrega más componentes según el tipo -->
+       <!-- <Vegetables />-->
     </div>
+
+    <button><a href="/menu">Ir al menú  </a></button>
 
     <button id="confirmar-ingredientes" class="mt-8 bg-blue-600 text-white px-6 py-3 rounded-full">
       Confirmar selección
     </button>
   </section>
 
-  <script src="/scripts/guardarSeleccion.js"></script>
 </Layout>
