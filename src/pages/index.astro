@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { db } from '../lib/db';
 import Vegetables from "../components/ingTypes/vegetables.astro";
+import Animal from "../components/ingTypes/animal.astro";
 
 ---
 
@@ -11,6 +12,7 @@ import Vegetables from "../components/ingTypes/vegetables.astro";
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Agrega más componentes según el tipo -->
        <Vegetables />
+      <Animal />
     </div>
 
     <button><a href="/menu">Ir al menú </a></button>
