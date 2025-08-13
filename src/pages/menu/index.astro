@@ -5,9 +5,11 @@ import {db} from "../../lib/db.ts";
 
 const url = new URL(Astro.request.url);
 const selectedVegetalIds = url.searchParams.getAll('vegetales').map(id => Number(id));
+console.log(selectedVegetalIds);
+
 ---
 
-<Layout>
+  <Layout>
   <div class="bg-gradient-to-tr from-black to-purple-700 text-white py-8 text-center">
     <h1 class="text-4xl font-bold mb-5">Menú Semanal</h1>
     <button
@@ -46,8 +48,8 @@ const selectedVegetalIds = url.searchParams.getAll('vegetales').map(id => Number
     </table>
   </div>
 
-<script>
-  const MEAL_CONFIG = {
+  <script>
+    const MEAL_CONFIG = {
     'Desayuno': [5, 4],
     'Batido': [4, 8, 5, 7],
     'Almuerzo': [2, 1, 5, 8],
@@ -98,28 +100,16 @@ const selectedVegetalIds = url.searchParams.getAll('vegetales').map(id => Number
   let semanaActual = 1;
   let maxSemanas = 2;
 
-  async function cargarIngredientes() {
-    try {
-      const response = await fetch('/api/ingredientes');
-      if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
-      
-      ingredientesPorTipo = await response.json();
-      
+  async function cargarIngredientesDesdeJSON() {
+      const script = document.getElementById('ingredientes-data');
+      ingredientesPorTipo = JSON.parse(script.textContent);
       document.getElementById('loading').style.display = 'none';
       document.getElementById('table-container').style.display = 'block';
       document.getElementById('week-counter').style.display = 'block';
-      
       generarTablaVacia();
-    } catch (error) {
-      console.error('Error al cargar ingredientes:', error);
-      document.getElementById('loading').style.display = 'none';
-      const errorDiv = document.getElementById('error');
-      errorDiv.textContent = `Error al cargar los ingredientes: ${error.message}`;
-      errorDiv.style.display = 'block';
     }
-  }
 
-  function generarTablaVacia() {
+  function generarTablaVacia() {a
     const tbody = document.getElementById('menu-tbody');
     tbody.innerHTML = '';
     
@@ -170,7 +160,7 @@ const selectedVegetalIds = url.searchParams.getAll('vegetales').map(id => Number
         <option value="Leguminosas" ${equiv.tipo === 'Leguminosas' ? 'selected' : ''}>Leguminosas</option>
         <option value="Lácteos" ${equiv.tipo === 'Lácteos' ? 'selected' : ''}>Lácteos</option>
         <option value="Grasa con Proteína" ${equiv.tipo === 'Grasa con Proteína' ? 'selected' : ''}>Grasa con Proteína</option>
-        <option value="Frutas" ${equiv.tipo === 'Frutas' ? 'selected' : ''}>Frutas</option>
+        <option value="Frutas" ${equiv.tipuno === 'Frutas' ? 'selected' : ''}>Frutas</option>
         <option value="Grasas y aceites" ${equiv.tipo === 'Grasas y aceites' ? 'selected' : ''}>Grasas y aceites</option>
         <option value="Azúcar" ${equiv.tipo === 'Azúcar' ? 'selected' : ''}>Azúcar</option>
       </select>
@@ -240,6 +230,6 @@ const selectedVegetalIds = url.searchParams.getAll('vegetales').map(id => Number
 
   document.getElementById('generate-btn').addEventListener('click', generarMenu);
   document.addEventListener('DOMContentLoaded', cargarIngredientes);
-</script>
+  </script>
 
 </Layout>
