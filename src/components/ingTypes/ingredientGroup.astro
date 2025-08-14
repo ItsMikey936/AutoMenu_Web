@@ -1,0 +1,26 @@
+---
+// src/components/IngredientGroup.astro
+import { db } from '../../lib/db';
+
+const { ingType_ID, title } = Astro.props;
+
+const ingredients = await db
+  .selectFrom('ingredients')
+  .selectAll()
+  .where('ingType_ID', '=', ingType_ID)
+  .execute();
+---
+
+<div class="bg-white rounded-xl shadow-lg p-6">
+  <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Selecciona tus {title}</h2>
+  <ul class="space-y-3">
+    {ingredients.map(ing => (
+      <li key={ing.ingredient_ID}>
+        <label class="flex items-center space-x-3">
+          <input type="checkbox" name="ingredients" value={ing.ingredient_ID} class="accent-green-600 h-4 w-4 rounded" />
+          <span class="text-gray-700">{ing.nombre_Ingrediente}</span>
+        </label>
+      </li>
+    ))}
+  </ul>
+</div>

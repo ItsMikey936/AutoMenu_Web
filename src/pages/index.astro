@@ -1,25 +1,29 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { db } from '../lib/db';
-import Vegetables from "../components/ingTypes/vegetables.astro";
-import Animal from "../components/ingTypes/animal.astro";
+import "../styles/global.css";
+
+import IngredientGroup from "../components/ingTypes/ingredientGroup.astro";
 
 ---
 
 <Layout>
-  <section class="p-6">
-    <h2 class="text-2xl font-bold mb-6 text-center">Selecciona tus ingredientes</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Agrega más componentes según el tipo -->
-       <Vegetables />
-      <Animal />
-    </div>
+  <form method="GET" action="/menu" class="max-w-3xl mx-auto mt-6 space-y-6">
+    <IngredientGroup ingType_ID={1} title="vegetales" />
+    <IngredientGroup ingType_ID={2} title="alimentos de origen animal" />
+    <IngredientGroup ingType_ID={3} title="leguminosas" />
+    <IngredientGroup ingType_ID={4} title="frutas" />
+    <IngredientGroup ingType_ID={5} title="cereales" />
+    <IngredientGroup ingType_ID={6} title="aceites y grasas" />
+    <IngredientGroup ingType_ID={7} title="grasas con proteína" />
+    <IngredientGroup ingType_ID={8} title="lácteos" />
+    <IngredientGroup ingType_ID={9} title="azúcares" />
 
-    <button><a href="/menu">Ir al menú </a></button>
-
-    <button id="confirmar-ingredientes" class="mt-8 bg-blue-600 text-white px-6 py-3 rounded-full">
-      Confirmar selección
-    </button>
-  </section>
+  <button
+    type="submit"
+    class="w-full bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-full font-medium transition"
+  >
+    Generar menú con ingredientes seleccionados
+  </button>
+</form>
 
 </Layout>
