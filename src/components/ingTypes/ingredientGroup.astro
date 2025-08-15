@@ -12,17 +12,25 @@ const ingredients = await db
 ---
 
 <div class="bg-white rounded-xl shadow-lg p-6">
-  <!-- Updated title to reflect new approach - unchecking unavailable ingredients -->
   <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Desmarca los {title} que NO puedes conseguir</h2>
-  <ul class="space-y-3">
-    {ingredients.map(ing => (
-      <li key={ing.ingredient_ID}>
-        <label class="flex items-center space-x-3">
-          <!-- Added data-category attribute to identify ingredient category -->
-          <input type="checkbox" name="ingredients" value={ing.ingredient_ID} data-category={ingType_ID} class="accent-green-600 h-4 w-4 rounded" checked />
+  <!-- Added max height and scroll for long ingredient lists -->
+  <div class="max-h-64 overflow-y-auto">
+    <!-- Updated to 2-column grid layout for ingredients within each card -->
+    <div class="grid grid-cols-2 gap-2">
+      {ingredients.map(ing => (
+        <label key={ing.ingredient_ID} class="flex items-center space-x-2 text-sm">
+          <!-- Added data-category attribute and checked by default -->
+          <input 
+            type="checkbox" 
+            name="ingredients" 
+            value={ing.ingredient_ID} 
+            data-category={ingType_ID}
+            class="accent-green-600 h-4 w-4 rounded" 
+            checked 
+          />
           <span class="text-gray-700">{ing.nombre_Ingrediente}</span>
         </label>
-      </li>
-    ))}
-  </ul>
+      ))}
+    </div>
+  </div>
 </div>
