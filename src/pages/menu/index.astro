@@ -53,7 +53,7 @@ const equivalentesPorTiempo = {
     { tipoId: '6', nombre: 'Grasa', cantidad: 1 }
   ],
   'Comida': [
-    { tipoId: '2', nombre: 'O.Animal', cantidad: 3 },
+    { tipoId: '2', nombre: 'O.Animal', cantidad: 2 },
     { tipoId: '1', nombre: 'Vegetal', cantidad: 2 },
     { tipoId: '5', nombre: 'Cereales', cantidad: 2 },
     { tipoId: '6', nombre: 'Grasa', cantidad: 3 },
@@ -193,11 +193,44 @@ const equivalentesPorTiempo = {
         });
 
         celda.innerHTML = ingredientesDelDia.map(ing => 
-          `<div class="mb-1 text-xs bg-slate-100 px-2 py-1 rounded border-l-2 border-purple-400">
+          `<div class="mb-1 text-xs bg-slate-100 px-2 py-1 rounded border-l-2 border-purple-400 ingredient-item cursor-pointer hover:bg-red-100 hover:border-red-400 transition-colors duration-200" data-ingredient-id="${ing.ingredient_ID}" data-tipo-id="${ing.ingType_ID}" data-celda-id="${tiempoKey}-${dia.toLowerCase()}">
             <div class="font-medium text-gray-800">${ing.nombre_Ingrediente}</div>
             <div class="text-slate-500">${ing.porcion_Ingrediente} ${ing.unidad_Ingrediente}</div>
+            <div class="text-xs text-red-600 opacity-0 hover:opacity-100 transition-opacity">🔄 Clic para cambiar</div>
           </div>`
         ).join('');
+      });
+    }
+
+    function reemplazarIngredienteIndividual(ingredientElement) {
+      const ingredientId = parseInt(ingredientElement.dataset.ingredientId);
+      const tipoId = ingredientElement.dataset.tipoId;
+      const celdaId = ingredientElement.dataset.celdaId;
+      
+      const ingredientesDelTipo = ingredientesPorTipo[tipoId];
+      if (!ingredientesDelTipo || ingredientesDelTipo.length <= 1) return;
+      
+      // Filtrar el ingrediente actual y obtener uno aleatorio diferente
+      const otrosIngredientes = ingredientesDelTipo.filter(ing => ing.ingredient_ID !== ingredientId);
+      const nuevoIngrediente = otrosIngredientes[Math.floor(Math.random() * otrosIngredientes.length)];
+      
+      // Reemplazar el contenido del elemento
+      ingredientElement.innerHTML = `
+        <div class="font-medium text-gray-800">${nuevoIngrediente.nombre_Ingrediente}</div>
+        <div class="text-slate-500">${nuevoIngrediente.porcion_Ingrediente} ${nuevoIngrediente.unidad_Ingrediente}</div>
+        <div class="text-xs text-red-600 opacity-0 hover:opacity-100 transition-opacity">🔄 Clic para cambiar</div>
+      `;
+      
+      // Actualizar el data-ingredient-id
+      ingredientElement.dataset.ingredientId = nuevoIngrediente.ingredient_ID;
+    }
+
+    function configurarEventListeners() {
+      document.querySelectorAll('.ingredient-item').forEach(item => {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+          reemplazarIngredienteIndividual(this);
+        });
       });
     }
 
@@ -209,6 +242,8 @@ const equivalentesPorTiempo = {
       tiemposComida.forEach(tiempo => {
         generarIngredientesParaTiempo(tiempo, nuevo);
       });
+      
+      setTimeout(configurarEventListeners, 100);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
