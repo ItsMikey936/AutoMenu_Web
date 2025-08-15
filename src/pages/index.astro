@@ -3,27 +3,27 @@ import Layout from "../layouts/Layout.astro";
 import "../styles/global.css";
 
 import IngredientGroup from "../components/ingTypes/ingredientGroup.astro";
-
 ---
 
 <Layout>
-  <form method="GET" action="/menu" class="max-w-3xl mx-auto mt-6 space-y-6">
-    <IngredientGroup ingType_ID={1} title="vegetales" />
-    <IngredientGroup ingType_ID={2} title="alimentos de origen animal" />
-    <IngredientGroup ingType_ID={3} title="leguminosas" />
-    <IngredientGroup ingType_ID={4} title="frutas" />
-    <IngredientGroup ingType_ID={5} title="cereales" />
-    <IngredientGroup ingType_ID={6} title="aceites y grasas" />
-    <IngredientGroup ingType_ID={7} title="grasas con proteína" />
-    <IngredientGroup ingType_ID={8} title="lácteos" />
-    <IngredientGroup ingType_ID={9} title="azúcares" />
+  <form method="GET" action="/menu" class="max-w-4xl mx-auto mt-6 px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <IngredientGroup ingType_ID={1} title="vegetales" />
+      <IngredientGroup ingType_ID={2} title="alimentos de origen animal" />
+      <IngredientGroup ingType_ID={3} title="leguminosas" />
+      <IngredientGroup ingType_ID={4} title="frutas" />
+      <IngredientGroup ingType_ID={5} title="cereales" />
+      <IngredientGroup ingType_ID={6} title="aceites y grasas" />
+      <IngredientGroup ingType_ID={7} title="grasas con proteína" />
+      <IngredientGroup ingType_ID={8} title="lácteos" />
+      <IngredientGroup ingType_ID={9} title="azúcares" />
+    </div>
 
-  <button
-    type="submit"
-    class="w-full bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-full font-medium transition"
-  >
-    Generar menú con ingredientes seleccionados
-  </button>
-</form>
-
+    <button
+      type="submit"
+      class="w-full bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-full font-semibold transition text-center text-sm sm:text-base"
+    >
+      Generar menú con ingredientes seleccionados
+    </button>
+  </form>
 </Layout>
