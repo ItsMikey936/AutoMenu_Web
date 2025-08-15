@@ -12,12 +12,14 @@ const ingredients = await db
 ---
 
 <div class="bg-white rounded-xl shadow-lg p-6">
-  <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Selecciona tus {title}</h2>
+  <!-- Updated title to reflect new approach - unchecking unavailable ingredients -->
+  <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Desmarca los {title} que NO puedes conseguir</h2>
   <ul class="space-y-3">
     {ingredients.map(ing => (
       <li key={ing.ingredient_ID}>
         <label class="flex items-center space-x-3">
-          <input type="checkbox" name="ingredients" value={ing.ingredient_ID} class="accent-green-600 h-4 w-4 rounded" />
+          <!-- Added data-category attribute to identify ingredient category -->
+          <input type="checkbox" name="ingredients" value={ing.ingredient_ID} data-category={ingType_ID} class="accent-green-600 h-4 w-4 rounded" checked />
           <span class="text-gray-700">{ing.nombre_Ingrediente}</span>
         </label>
       </li>
