@@ -22,33 +22,34 @@ import "../styles/global.css";
   <div id="error" class="bg-red-100 text-red-700 p-4 my-5 rounded border border-red-300 hidden"></div>
 
   <div class="overflow-x-auto hidden" id="table-container">
-    <table class="w-full table-auto border-collapse text-sm">
-      <thead class="bg-gray-100 text-gray-800 uppercase text-[0.85rem] tracking-wide">
+  <div class="w-full max-w-full">
+    <table class="min-w-full table-auto border-collapse text-xs sm:text-sm md:text-base">
+      <thead class="bg-gray-100 text-gray-800 uppercase text-[0.7rem] sm:text-[0.85rem] tracking-wide">
         <tr>
-          <th class="px-3 py-4 border-b border-gray-300">TIPO DE ALIMENTO</th>
-          <th class="px-3 py-4 border-b border-gray-300">LUNES</th>
-          <th class="px-3 py-4 border-b border-gray-300">MARTES</th>
-          <th class="px-3 py-4 border-b border-gray-300">MIÉRCOLES</th>
-          <th class="px-3 py-4 border-b border-gray-300">JUEVES</th>
-          <th class="px-3 py-4 border-b border-gray-300">VIERNES</th>
-          <th class="px-3 py-4 border-b border-gray-300">SÁBADO</th>
-          <th class="px-3 py-4 border-b border-gray-300">DOMINGO</th>
-          <th class="px-3 py-4 border-b border-gray-300">EQUIVALENCIAS</th>
+          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">TIPO DE ALIMENTO</th>
+          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">LUNES</th>
+          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">MARTES</th>
+          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">MIÉRCOLES</th>
+          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">JUEVES</th>
+          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">VIERNES</th>
+          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">SÁBADO</th>
+          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">DOMINGO</th>
+          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">EQUIVALENCIAS</th>
         </tr>
       </thead>
       <tbody id="menu-tbody" class="divide-y divide-gray-200">
         <!-- Filas generadas dinámicamente -->
       </tbody>
     </table>
-
-    <div class="flex justify-center mt-8">
-      <a href="/selection" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full font-semibold transition text-sm sm:text-base">
-        Selecciona tus ingredientes
-      </a>
-    </div>
-
-
   </div>
+
+  <div class="flex justify-center mt-6 sm:mt-8">
+    <a href="/selection" class="bg-purple-600 hover:bg-purple-700 text-white px-3 sm:px-4 py-2 rounded-full font-semibold transition text-xs sm:text-sm md:text-base">
+      Selecciona tus ingredientes
+    </a>
+  </div>
+</div>
+
 
   <script>
     // Configuración del menú
