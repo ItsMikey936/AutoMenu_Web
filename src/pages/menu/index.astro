@@ -95,40 +95,51 @@ const equivalentesPorTiempo = {
       </div>
       <div class="flex-1 px-4 pb-4 overflow-hidden">
         <div class="h-full w-full bg-white rounded-lg shadow-xl overflow-hidden flex flex-col">
-          <table class="w-full h-full table-fixed">
-            <thead class="flex-shrink-0">
-              <tr class="bg-gray-100">
-                <th class="px-2 py-2 text-left font-bold text-gray-800 border-r border-gray-300 text-xs" style="width: 12%;">TIPO DE ALIMENTO</th>
-                {diasSemana.map(dia => (
-                  <th class="px-2 py-2 text-center font-bold text-gray-800 border-r border-gray-300 text-xs" style="width: 14.4%;">{dia.toUpperCase()}</th>
-                ))}
-                <th class="px-2 py-2 text-center font-bold text-gray-800 text-xs" style="width: 16%;">EQUIVALENCIAS</th>
-              </tr>
-            </thead>
-            <tbody class="flex-1">
-              {tiemposComida.map((tiempo, index) => (
-                <tr class="border-b border-gray-200">
-                  <td class="px-2 py-2 font-semibold text-gray-900 border-r border-gray-300 bg-gray-50 align-top text-xs">{tiempo}</td>
+          <!-- Contenedor responsivo -->
+          <div class="overflow-x-auto w-full h-full">
+            <table class="w-full min-w-[800px] table-fixed">
+              <thead class="flex-shrink-0">
+                <tr class="bg-gray-100">
+                  <th class="px-2 py-2 text-left font-bold text-gray-800 border-r border-gray-300 text-xs sticky left-0 bg-gray-100 z-10">
+                    TIPO DE ALIMENTO
+                  </th>
                   {diasSemana.map(dia => (
-                    <td class="px-2 py-2 border-r border-gray-300 align-top">
-                      <div id={`${tiempo.toLowerCase().replace(/\s+/g, '-')}-${dia.toLowerCase()}`} class="space-y-1">
-                        <!-- Ingredientes generados aparecerán aquí -->
+                    <th class="px-2 py-2 text-center font-bold text-gray-800 border-r border-gray-300 text-xs">
+                      {dia.toUpperCase()}
+                    </th>
+                  ))}
+                  <th class="px-2 py-2 text-center font-bold text-gray-800 text-xs bg-gray-100 sticky right-0 z-10">
+                    EQUIVALENCIAS
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="flex-1">
+                {tiemposComida.map((tiempo, index) => (
+                  <tr class="border-b border-gray-200">
+                    <td class="px-2 py-2 font-semibold text-gray-900 border-r border-gray-300 bg-gray-50 align-top text-xs sticky left-0 z-10">
+                      {tiempo}
+                    </td>
+                    {diasSemana.map(dia => (
+                      <td class="px-2 py-2 border-r border-gray-300 align-top">
+                        <div id={`${tiempo.toLowerCase().replace(/\s+/g, '-')}-${dia.toLowerCase()}`} class="space-y-1">
+                          <!-- Ingredientes generados aparecerán aquí -->
+                        </div>
+                      </td>
+                    ))}
+                    <td class="px-2 py-2 bg-gray-50 align-top sticky right-0 z-10">
+                      <div class="space-y-1">
+                        {equivalentesPorTiempo[tiempo]?.map(equiv => (
+                          <div class="text-xs text-gray-700">
+                            {equiv.nombre}
+                          </div>
+                        ))}
                       </div>
                     </td>
-                  ))}
-                  <td class="px-2 py-2 bg-gray-50 align-top">
-                    <div class="space-y-1">
-                      {equivalentesPorTiempo[tiempo]?.map(equiv => (
-                        <div class="text-xs text-gray-700">
-                          {equiv.nombre}
-                        </div>
-                      ))}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
