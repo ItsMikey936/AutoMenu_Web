@@ -31,8 +31,6 @@ import "../styles/global.css";
           <th class="px-3 py-4 border-b border-gray-300">MIÉRCOLES</th>
           <th class="px-3 py-4 border-b border-gray-300">JUEVES</th>
           <th class="px-3 py-4 border-b border-gray-300">VIERNES</th>
-          <th class="px-3 py-4 border-b border-gray-300">SÁBADO</th>
-          <th class="px-3 py-4 border-b border-gray-300">DOMINGO</th>
           <th class="px-3 py-4 border-b border-gray-300">EQUIVALENCIAS</th>
         </tr>
       </thead>
@@ -40,14 +38,6 @@ import "../styles/global.css";
         <!-- Filas generadas dinámicamente -->
       </tbody>
     </table>
-
-    <div class="flex justify-center mt-8">
-      <a href="/selection" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full font-semibold transition text-sm sm:text-base">
-        Selecciona tus ingredientes
-      </a>
-    </div>
-
-
   </div>
 
   <script>
@@ -97,7 +87,7 @@ import "../styles/global.css";
       ]
     };
 
-    const DAYS = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO', 'DOMINGO'];
+    const DAYS = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES'];
     let ingredientesPorTipo = {};
     let ingredientesUsados = new Set();
     let semanaActual = 1;

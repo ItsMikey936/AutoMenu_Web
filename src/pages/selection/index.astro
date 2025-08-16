@@ -1,0 +1,91 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import "../../styles/global.css";
+
+import IngredientGroup from "../../components/ingTypes/ingredientGroup.astro";
+---
+
+<Layout>
+  <form method="GET" action="/menu" class="max-w-8xl mx-auto mt-6 px-4 sm:px-6 lg:px-8 space-y-6" id="ingredientForm">
+    <!-- Added error message container -->
+    <div id="errorMessages" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+      <h3 class="text-red-800 font-semibold mb-2">Se requieren más ingredientes:</h3>
+      <ul id="errorList" class="text-red-700 text-sm space-y-1"></ul>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
+      <IngredientGroup ingType_ID={1} title="vegetales" />
+      <IngredientGroup ingType_ID={2} title="alimentos de origen animal" />
+      <IngredientGroup ingType_ID={3} title="leguminosas" />
+      <IngredientGroup ingType_ID={4} title="frutas" />
+      <IngredientGroup ingType_ID={5} title="cereales" />
+      <IngredientGroup ingType_ID={6} title="aceites y grasas" />
+      <IngredientGroup ingType_ID={7} title="lácteos" />
+      <IngredientGroup ingType_ID={8} title="grasas con proteína" />
+      <IngredientGroup ingType_ID={9} title="azúcares" />
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-full font-semibold transition text-center text-sm sm:text-base"
+    >
+      Generar menú con ingredientes disponibles
+    </button>
+  </form>
+
+  <!-- Added validation script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('ingredientForm');
+      const errorMessages = document.getElementById('errorMessages');
+      const errorList = document.getElementById('errorList');
+      
+      const categoryNames = {
+        1: 'Vegetales',
+        2: 'Alimentos de origen animal',
+        3: 'Leguminosas',
+        4: 'Frutas',
+        5: 'Cereales',
+        6: 'Aceites y grasas',
+        7: 'Lácteos',
+        8: 'Grasas con proteína',
+        9: 'Azúcares'
+      };
+
+      form.addEventListener('submit', function(e) {
+        const errors = [];
+        
+        for (let categoryId = 1; categoryId <= 9; categoryId++) {
+          const checkboxes = form.querySelectorAll(`input[name="ingredients"][data-category="${categoryId}"]:checked`);
+          
+          const smallGroups = [3, 7, 8]; // leguminosas, grasas con proteína, lácteos
+          const minRequired = smallGroups.includes(categoryId) ? 2 : 7;
+          
+          if (checkboxes.length < minRequired) {
+            const categoryName = categoryNames[categoryId];
+            const remaining = minRequired - checkboxes.length;
+            errors.push(`${categoryName}: necesitas ${remaining} ingrediente${remaining > 1 ? 's' : ''} más (tienes ${checkboxes.length}/${minRequired})`);
+          }
+        }
+        
+        if (errors.length > 0) {
+          e.preventDefault();
+          
+          // Show error messages
+          errorList.innerHTML = '';
+          errors.forEach(error => {
+            const li = document.createElement('li');
+            li.textContent = `• ${error}`;
+            errorList.appendChild(li);
+          });
+          
+          errorMessages.classList.remove('hidden');
+          errorMessages.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          // Hide error messages if validation passes
+          errorMessages.classList.add('hidden');
+        }
+      });
+    });
+  </script>
+</Layout>

@@ -32,42 +32,40 @@ if (selectedIngredientIds.length > 0) {
   }, {});
 }
 
-const tiemposComida = ['Desayuno', 'Batido post-gym', 'Almuerzo', 'Comida', 'Colación', 'Cena'];
-const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+const tiemposComida = ['Desayuno', 'Batido', 'Almuerzo', 'Comida', 'Colación', 'Cena'];
+const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
 
 const equivalentesPorTiempo = {
   'Desayuno': [
-    { tipoId: '5', nombre: 'Cereal', cantidad: 1 },
-    { tipoId: '4', nombre: 'Fruta', cantidad: 2 }
+    { tipoId: '5', nombre: '1 cereal', cantidad: 1 },
+    { tipoId: '4', nombre: '2 frutas', cantidad: 2 }
   ],
-  'Batido post-gym': [
-    { tipoId: '4', nombre: 'Frutas', cantidad: 2 },
-    { tipoId: '7', nombre: 'Grasa con proteína', cantidad: 1 },
-    { tipoId: '5', nombre: 'Cereal', cantidad: 1 },
-    { tipoId: '8', nombre: 'Lácteo', cantidad: 1 }
+  'Batido': [
+    { tipoId: '4', nombre: '2 frutas', cantidad: 2 },
+    { tipoId: '7', nombre: '1 grasa con proteína', cantidad: 1 },
+    { tipoId: '5', nombre: '1 cereal', cantidad: 1 },
+    { tipoId: '8', nombre: '1 lácteo', cantidad: 1 }
   ],
   'Almuerzo': [
-    { tipoId: '5', nombre: 'Cereales', cantidad: 2 },
-    { tipoId: '2', nombre: 'O.Animal', cantidad: 2 },
-    { tipoId: '1', nombre: 'Vegetal', cantidad: 1 },
-    { tipoId: '6', nombre: 'Grasa', cantidad: 1 }
+    { tipoId: '5', nombre: '2 cereales', cantidad: 2 },
+    { tipoId: '2', nombre: '2 origen animal', cantidad: 2 },
+    { tipoId: '1', nombre: '1 vegetal', cantidad: 1 }
   ],
   'Comida': [
-    { tipoId: '2', nombre: 'O.Animal', cantidad: 2 },
-    { tipoId: '1', nombre: 'Vegetal', cantidad: 2 },
-    { tipoId: '5', nombre: 'Cereales', cantidad: 2 },
-    { tipoId: '6', nombre: 'Grasa', cantidad: 3 },
-    { tipoId: '4', nombre: 'Fruta', cantidad: 1 }
+    { tipoId: '2', nombre: '2 vegetales', cantidad: 2 },
+    { tipoId: '1', nombre: '2 cereales', cantidad: 2 },
+    { tipoId: '6', nombre: '1 grasa y aceite', cantidad: 1 },
+    { tipoId: '4', nombre: '1 fruta', cantidad: 1 }
   ],
   'Colación': [
-    { tipoId: '1', nombre: 'Vegetal', cantidad: 1 },
-    { tipoId: '6', nombre: 'Grasa', cantidad: 1 },
-    { tipoId: '4', nombre: 'Fruta', cantidad: 2 }
+    { tipoId: '1', nombre: '1 vegetal', cantidad: 1 },
+    { tipoId: '7', nombre: '1 grasa con proteína', cantidad: 1 },
+    { tipoId: '4', nombre: '1 fruta', cantidad: 1 }
   ],
   'Cena': [
-    { tipoId: '4', nombre: 'Fruta', cantidad: 1 },
-    { tipoId: '5', nombre: 'Cereal', cantidad: 1 },
-    { tipoId: '2', nombre: 'O.Animal', cantidad: 1 }
+    { tipoId: '4', nombre: '2 frutas', cantidad: 2 },
+    { tipoId: '5', nombre: '3 origen animal', cantidad: 1 },
+    { tipoId: '2', nombre: '1 cereal', cantidad: 1 }
   ]
 };
 ---
@@ -84,51 +82,45 @@ const equivalentesPorTiempo = {
       </div>
     </div>
   ) : (
-    <div class="min-h-screen bg-slate-50 py-10">
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="flex justify-between items-center mb-10">
-          <h1 class="text-4xl font-extrabold text-slate-800 tracking-tight">Menú Semanal</h1>
-          <!-- Added button to generate new menu -->
-          <button 
-            id="generar-nuevo-menu"
-            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-200 flex items-center gap-2"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            Generar Nuevo Menú
-          </button>
-        </div>
-
-        <!-- Redesigned table with Equivalentes column -->
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-          <table class="w-full">
-            <thead>
+    <div class="h-screen flex flex-col" style="background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 50%, #000000 100%);">
+      <div class="text-center py-6 flex-shrink-0">
+        <h1 class="text-3xl font-bold text-white mb-4">Menú Semanal</h1>
+        <button 
+          id="generar-nuevo-menu"
+          class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-semibold transition duration-200"
+        >
+          Generar menú aleatorio
+        </button>
+        <p class="text-white/80 mt-3 text-sm">Semana 1 de 2</p>
+      </div>
+      <div class="flex-1 px-4 pb-4 overflow-hidden">
+        <div class="h-full w-full bg-white rounded-lg shadow-xl overflow-hidden flex flex-col">
+          <table class="w-full h-full table-fixed">
+            <thead class="flex-shrink-0">
               <tr class="bg-gray-100">
-                <th class="px-4 py-3 text-left font-semibold text-gray-700 border-r"></th>
+                <th class="px-2 py-2 text-left font-bold text-gray-800 border-r border-gray-300 text-xs" style="width: 12%;">TIPO DE ALIMENTO</th>
                 {diasSemana.map(dia => (
-                  <th class="px-4 py-3 text-center font-semibold text-gray-700 border-r">{dia}</th>
+                  <th class="px-2 py-2 text-center font-bold text-gray-800 border-r border-gray-300 text-xs" style="width: 14.4%;">{dia.toUpperCase()}</th>
                 ))}
-                <th class="px-4 py-3 text-center font-semibold text-purple-700 border-r bg-purple-50">Equivalentes</th>
+                <th class="px-2 py-2 text-center font-bold text-gray-800 text-xs" style="width: 16%;">EQUIVALENCIAS</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="flex-1">
               {tiemposComida.map((tiempo, index) => (
-                <tr class={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td class="px-4 py-6 font-medium text-gray-900 border-r border-b">{tiempo}</td>
+                <tr class="border-b border-gray-200">
+                  <td class="px-2 py-2 font-semibold text-gray-900 border-r border-gray-300 bg-gray-50 align-top text-xs">{tiempo}</td>
                   {diasSemana.map(dia => (
-                    <td class="px-4 py-6 border-r border-b">
-                      <div id={`${tiempo.toLowerCase().replace(/\s+/g, '-')}-${dia.toLowerCase()}`} class="min-h-[80px] text-sm text-gray-600">
+                    <td class="px-2 py-2 border-r border-gray-300 align-top">
+                      <div id={`${tiempo.toLowerCase().replace(/\s+/g, '-')}-${dia.toLowerCase()}`} class="space-y-1">
                         <!-- Ingredientes generados aparecerán aquí -->
                       </div>
                     </td>
                   ))}
-                  <td class="px-4 py-6 border-b bg-purple-50">
-                    <div class="text-xs space-y-1">
+                  <td class="px-2 py-2 bg-gray-50 align-top">
+                    <div class="space-y-1">
                       {equivalentesPorTiempo[tiempo]?.map(equiv => (
-                        <div class="flex items-center gap-1">
-                          <span class="font-semibold text-purple-700">{equiv.cantidad}</span>
-                          <span class="text-gray-700">{equiv.nombre}</span>
+                        <div class="text-xs text-gray-700">
+                          {equiv.nombre}
                         </div>
                       ))}
                     </div>
@@ -144,6 +136,16 @@ const equivalentesPorTiempo = {
 
   <script define:vars={{ ingredientesPorTipo, tiemposComida, diasSemana, equivalentesPorTiempo }}>
     let ingredientesUsados = new Set();
+
+    const coloresPorTipo = {
+      '1': 'text-green-600',    // Vegetales
+      '2': 'text-red-600',      // Origen animal  
+      '4': 'text-orange-500',   // Frutas
+      '5': 'text-blue-600',     // Cereales
+      '6': 'text-purple-600',   // Grasas
+      '7': 'text-pink-600',     // Grasa con proteína
+      '8': 'text-cyan-600'      // Lácteos
+    };
 
     function shuffleArray(array) {
       const shuffled = [...array];
@@ -170,11 +172,9 @@ const equivalentesPorTiempo = {
           if (ingredientesDelTipo && ingredientesDelTipo.length > 0) {
             let disponibles = [...ingredientesDelTipo];
             
-            // Si hay suficientes ingredientes y queremos evitar repetición
             if (evitarRepeticion && disponibles.length > equiv.cantidad) {
               disponibles = disponibles.filter(ing => !ingredientesUsados.has(ing.ingredient_ID));
               
-              // Si no quedan suficientes sin usar, usar todos
               if (disponibles.length < equiv.cantidad) {
                 disponibles = [...ingredientesDelTipo];
               }
@@ -183,7 +183,6 @@ const equivalentesPorTiempo = {
             const shuffled = shuffleArray(disponibles);
             const seleccionados = shuffled.slice(0, Math.min(equiv.cantidad, shuffled.length));
             
-            // Marcar como usados
             if (evitarRepeticion) {
               seleccionados.forEach(ing => ingredientesUsados.add(ing.ingredient_ID));
             }
@@ -192,13 +191,12 @@ const equivalentesPorTiempo = {
           }
         });
 
-        celda.innerHTML = ingredientesDelDia.map(ing => 
-          `<div class="mb-1 text-xs bg-slate-100 px-2 py-1 rounded border-l-2 border-purple-400 ingredient-item cursor-pointer hover:bg-red-100 hover:border-red-400 transition-colors duration-200" data-ingredient-id="${ing.ingredient_ID}" data-tipo-id="${ing.ingType_ID}" data-celda-id="${tiempoKey}-${dia.toLowerCase()}">
-            <div class="font-medium text-gray-800">${ing.nombre_Ingrediente}</div>
-            <div class="text-slate-500">${ing.porcion_Ingrediente} ${ing.unidad_Ingrediente}</div>
-            <div class="text-xs text-red-600 opacity-0 hover:opacity-100 transition-opacity">🔄 Clic para cambiar</div>
-          </div>`
-        ).join('');
+        celda.innerHTML = ingredientesDelDia.map(ing => {
+          const colorClass = coloresPorTipo[ing.ingType_ID] || 'text-gray-700';
+          return `<div class="ingredient-item cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded transition-colors duration-200" data-ingredient-id="${ing.ingredient_ID}" data-tipo-id="${ing.ingType_ID}" data-celda-id="${tiempoKey}-${dia.toLowerCase()}">
+            <div class="font-medium ${colorClass} text-xs leading-tight">${ing.nombre_Ingrediente}  ${ing.porcion_Ingrediente} ${ing.unidad_Ingrediente}(s) </div>
+          </div>`;
+        }).join('');
       });
     }
 
@@ -210,18 +208,14 @@ const equivalentesPorTiempo = {
       const ingredientesDelTipo = ingredientesPorTipo[tipoId];
       if (!ingredientesDelTipo || ingredientesDelTipo.length <= 1) return;
       
-      // Filtrar el ingrediente actual y obtener uno aleatorio diferente
       const otrosIngredientes = ingredientesDelTipo.filter(ing => ing.ingredient_ID !== ingredientId);
       const nuevoIngrediente = otrosIngredientes[Math.floor(Math.random() * otrosIngredientes.length)];
       
-      // Reemplazar el contenido del elemento
+      const colorClass = coloresPorTipo[tipoId] || 'text-gray-700';
       ingredientElement.innerHTML = `
-        <div class="font-medium text-gray-800">${nuevoIngrediente.nombre_Ingrediente}</div>
-        <div class="text-slate-500">${nuevoIngrediente.porcion_Ingrediente} ${nuevoIngrediente.unidad_Ingrediente}</div>
-        <div class="text-xs text-red-600 opacity-0 hover:opacity-100 transition-opacity">🔄 Clic para cambiar</div>
+        <div class="font-medium ${colorClass} text-xs leading-tight">${nuevoIngrediente.nombre_Ingrediente}</div>
       `;
       
-      // Actualizar el data-ingredient-id
       ingredientElement.dataset.ingredientId = nuevoIngrediente.ingredient_ID;
     }
 
