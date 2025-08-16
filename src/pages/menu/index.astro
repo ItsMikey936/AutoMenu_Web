@@ -224,7 +224,7 @@ const equivalentesPorTiempo = {
       
       const colorClass = coloresPorTipo[tipoId] || 'text-gray-700';
       ingredientElement.innerHTML = `
-        <div class="font-medium ${colorClass} text-xs leading-tight">${nuevoIngrediente.nombre_Ingrediente}</div>
+        <div class="font-medium ${colorClass} text-xs leading-tight">${nuevoIngrediente.nombre_Ingrediente}  ${ing.porcion_Ingrediente} ${ing.unidad_Ingrediente}(s) </div>
       `;
       
       ingredientElement.dataset.ingredientId = nuevoIngrediente.ingredient_ID;
