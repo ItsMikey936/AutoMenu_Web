@@ -205,7 +205,7 @@ const equivalentesPorTiempo = {
         celda.innerHTML = ingredientesDelDia.map(ing => {
           const colorClass = coloresPorTipo[ing.ingType_ID] || 'text-gray-700';
           return `<div class="ingredient-item cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded transition-colors duration-200" data-ingredient-id="${ing.ingredient_ID}" data-tipo-id="${ing.ingType_ID}" data-celda-id="${tiempoKey}-${dia.toLowerCase()}">
-            <div class="font-medium ${colorClass} text-xs leading-tight">${ing.nombre_Ingrediente}  ${ing.porcion_Ingrediente} ${ing.unidad_Ingrediente}(s) </div>
+            <div class="font-medium ${colorClass} text-xs leading-tight">${ing.nombre_Ingrediente} ${ing.porcion_Ingrediente} ${ing.unidad_Ingrediente}</div>
           </div>`;
         }).join('');
       });
@@ -224,7 +224,7 @@ const equivalentesPorTiempo = {
       
       const colorClass = coloresPorTipo[tipoId] || 'text-gray-700';
       ingredientElement.innerHTML = `
-        <div class="font-medium ${colorClass} text-xs leading-tight">${nuevoIngrediente.nombre_Ingrediente}  ${ing.porcion_Ingrediente} ${ing.unidad_Ingrediente}(s) </div>
+        <div class="font-medium ${colorClass} text-xs leading-tight">${nuevoIngrediente.nombre_Ingrediente} ${nuevoIngrediente.porcion_Ingrediente} ${nuevoIngrediente.unidad_Ingrediente}</div>
       `;
       
       ingredientElement.dataset.ingredientId = nuevoIngrediente.ingredient_ID;
