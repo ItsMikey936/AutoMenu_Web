@@ -32,10 +32,10 @@ if (selectedIngredientIds.length > 0) {
   }, {});
 }
 
-const tiemposComida = ['Desayuno', 'Batido', 'Almuerzo', 'Comida', 'Colación', 'Cena'];
-const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
+let tiemposComida = ['Desayuno', 'Batido', 'Almuerzo', 'Comida', 'Colación', 'Cena'];
+const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
-const equivalentesPorTiempo = {
+let equivalentesPorTiempo = {
   'Desayuno': [
     { tipoId: '5', nombre: '1 cereal', cantidad: 1 },
     { tipoId: '4', nombre: '2 frutas', cantidad: 2 }
@@ -68,6 +68,16 @@ const equivalentesPorTiempo = {
     { tipoId: '2', nombre: '1 cereal', cantidad: 1 }
   ]
 };
+
+const tiposIngredientes = [
+  { id: '1', nombre: 'Vegetales' },
+  { id: '2', nombre: 'Origen Animal' },
+  { id: '4', nombre: 'Frutas' },
+  { id: '5', nombre: 'Cereales' },
+  { id: '6', nombre: 'Grasas y Aceites' },
+  { id: '7', nombre: 'Grasa con Proteína' },
+  { id: '8', nombre: 'Lácteos' }
+];
 ---
 
 <Layout>
@@ -84,14 +94,120 @@ const equivalentesPorTiempo = {
   ) : (
     <div class="h-screen flex flex-col" style="background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 50%, #000000 100%);">
       <div class="text-center py-6 flex-shrink-0">
-        <h1 class="text-3xl font-bold text-white mb-4">Menú Semanal</h1>
-        <button 
-          id="generar-nuevo-menu"
-          class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-semibold transition duration-200"
-        >
-          Generar menú aleatorio
-        </button>
+        <h1 class="text-3xl font-bold text-white mb-4">Menú Semanal Personalizado</h1>
+        <div class="flex justify-center gap-4 flex-wrap">
+          <button 
+            id="generar-nuevo-menu"
+            class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-semibold transition duration-200"
+          >
+            Generar menú aleatorio
+          </button>
+          <!-- Nuevo botón para gestionar tiempos de comida -->
+          <button 
+            id="gestionar-tiempos"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full font-semibold transition duration-200"
+          >
+            Gestionar tiempos de comida
+          </button>
+        </div>
       </div>
+      
+      <!-- Modal para gestionar tiempos de comida -->
+      <div id="modal-tiempos" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Gestionar Tiempos de Comida</h2>
+            <button id="cerrar-modal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-3">Agregar Nuevo Tiempo de Comida</h3>
+            <div class="flex gap-2 mb-4">
+              <input 
+                type="text" 
+                id="nuevo-tiempo-nombre" 
+                placeholder="Nombre del tiempo de comida"
+                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+              <button 
+                id="agregar-tiempo"
+                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold transition"
+              >
+                Agregar
+              </button>
+            </div>
+          </div>
+          
+          <div id="lista-tiempos-personalizados">
+            <!-- Los tiempos personalizados aparecerán aquí -->
+          </div>
+          
+          <div class="flex justify-end gap-4 mt-6">
+            <button 
+              id="cancelar-cambios"
+              class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-semibold transition"
+            >
+              Cancelar
+            </button>
+            <button 
+              id="guardar-cambios"
+              class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold transition"
+            >
+              Guardar Cambios
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal para editar tiempo específico -->
+      <div id="modal-editar-tiempo" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Editar tiempo de comida</h2>
+            <button id="cerrar-modal-editar" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+          </div>
+          
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Nombre del tiempo de comida</label>
+            <input 
+              type="text" 
+              id="editar-tiempo-nombre" 
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+          </div>
+          
+          <div class="mb-6">
+            <div class="flex justify-between items-center mb-3">
+              <label class="block text-sm font-medium text-gray-700">Equivalencias (tipos de alimentos)</label>
+              <button 
+                id="agregar-equivalencia-editar"
+                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm font-semibold transition"
+              >
+                + Agregar
+              </button>
+            </div>
+            <div id="equivalencias-editar" class="space-y-2">
+              <!-- Las equivalencias aparecerán aquí -->
+            </div>
+          </div>
+          
+          <div class="flex justify-end gap-4">
+            <button 
+              id="cancelar-editar"
+              class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-semibold transition"
+            >
+              Cancelar
+            </button>
+            <button 
+              id="guardar-editar"
+              class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold transition"
+            >
+              Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="flex-1 px-4 pb-4 overflow-hidden">
         <div class="h-full w-full bg-white rounded-lg shadow-xl overflow-hidden flex flex-col">
           <!-- Contenedor responsivo -->
@@ -107,35 +223,17 @@ const equivalentesPorTiempo = {
                       {dia.toUpperCase()}
                     </th>
                   ))}
-                  <th class="px-2 py-2 text-center font-bold text-gray-800 text-xs bg-gray-100 sticky right-0 z-10">
+                  <th class="px-2 py-2 text-center font-bold text-gray-800 text-xs bg-gray-100 sticky right-16 z-10">
                     EQUIVALENCIAS
+                  </th>
+                  <!-- Agregando columna de acciones -->
+                  <th class="px-2 py-2 text-center font-bold text-gray-800 text-xs bg-gray-100 sticky right-0 z-10">
+                    ACCIONES
                   </th>
                 </tr>
               </thead>
-              <tbody class="flex-1">
-                {tiemposComida.map((tiempo, index) => (
-                  <tr class="border-b border-gray-200">
-                    <td class="px-2 py-2 font-semibold text-gray-900 border-r border-gray-300 bg-gray-50 align-top text-xs sticky left-0 z-10">
-                      {tiempo}
-                    </td>
-                    {diasSemana.map(dia => (
-                      <td class="px-2 py-2 border-r border-gray-300 align-top">
-                        <div id={`${tiempo.toLowerCase().replace(/\s+/g, '-')}-${dia.toLowerCase()}`} class="space-y-1">
-                          <!-- Ingredientes generados aparecerán aquí -->
-                        </div>
-                      </td>
-                    ))}
-                    <td class="px-2 py-2 bg-gray-50 align-top sticky right-0 z-10">
-                      <div class="space-y-1">
-                        {equivalentesPorTiempo[tiempo]?.map(equiv => (
-                          <div class="text-xs text-gray-700">
-                            {equiv.nombre}
-                          </div>
-                        ))}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+              <tbody class="flex-1" id="tabla-tiempos">
+                <!-- Los tiempos de comida ahora se generan dinámicamente -->
               </tbody>
             </table>
           </div>
@@ -144,8 +242,11 @@ const equivalentesPorTiempo = {
     </div>
   )}
 
-  <script define:vars={{ ingredientesPorTipo, tiemposComida, diasSemana, equivalentesPorTiempo }}>
+  <script define:vars={{ ingredientesPorTipo, tiemposComida, diasSemana, equivalentesPorTiempo, tiposIngredientes }}>
     let ingredientesUsados = new Set();
+    let tiemposPersonalizados = [...tiemposComida];
+    let equivalenciasPersonalizadas = { ...equivalentesPorTiempo };
+    let tiempoEditando = null; // Variable para rastrear qué tiempo se está editando
 
     const coloresPorTipo = {
       '1': 'text-green-600',    // Vegetales
@@ -168,12 +269,14 @@ const equivalentesPorTiempo = {
 
     function generarIngredientesParaTiempo(tiempo, evitarRepeticion = true) {
       const tiempoKey = tiempo.toLowerCase().replace(/\s+/g, '-');
-      const equivalentes = equivalentesPorTiempo[tiempo];
+      const equivalentes = equivalenciasPersonalizadas[tiempo];
       
       if (!equivalentes) return;
 
       diasSemana.forEach(dia => {
         const celda = document.getElementById(`${tiempoKey}-${dia.toLowerCase()}`);
+        if (!celda) return;
+        
         const ingredientesDelDia = [];
         
         equivalentes.forEach(equiv => {
@@ -238,25 +341,302 @@ const equivalentesPorTiempo = {
       });
     }
 
+    function renderizarTablaTiempos() {
+      const tbody = document.getElementById('tabla-tiempos');
+      tbody.innerHTML = tiemposPersonalizados.map((tiempo, index) => `
+        <tr class="border-b border-gray-200">
+          <td class="px-2 py-2 font-semibold text-gray-900 border-r border-gray-300 bg-gray-50 align-top text-xs sticky left-0 z-10">
+            ${tiempo}
+          </td>
+          ${diasSemana.map(dia => `
+            <td class="px-2 py-2 border-r border-gray-300 align-top">
+              <div id="${tiempo.toLowerCase().replace(/\s+/g, '-')}-${dia.toLowerCase()}" class="space-y-1">
+                <!-- Ingredientes generados aparecerán aquí -->
+              </div>
+            </td>
+          `).join('')}
+          <td class="px-2 py-2 bg-gray-50 align-top sticky right-16 z-10">
+            <div class="space-y-1">
+              ${equivalenciasPersonalizadas[tiempo]?.map(equiv => `
+                <div class="text-xs text-gray-700">
+                  ${equiv.nombre}
+                </div>
+              `).join('') || ''}
+            </div>
+          </td>
+          <!-- Agregando columna de acciones con botones de editar y eliminar -->
+          <td class="px-2 py-2 bg-gray-50 align-top sticky right-0 z-10">
+            <div class="flex gap-1 justify-center">
+              <button 
+                class="btn-edit bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs transition-colors duration-200"
+                data-tiempo="${tiempo}"
+                title="Editar ${tiempo}"
+              >
+                ✏️
+              </button>
+              <button 
+                class="btn-delete bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs transition-colors duration-200"
+                data-tiempo="${tiempo}"
+                title="Eliminar ${tiempo}"
+              >
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+      
+      configurarEventListenersAcciones();
+    }
+
+    function configurarEventListenersAcciones() {
+      // Botones de editar
+      document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const tiempo = this.dataset.tiempo;
+          mostrarModalEditarTiempo(tiempo);
+        });
+      });
+
+      // Botones de eliminar
+      document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const tiempo = this.dataset.tiempo;
+          tiemposPersonalizados = tiemposPersonalizados.filter(t => t !== tiempo);
+          delete equivalenciasPersonalizadas[tiempo];
+          renderizarTablaTiempos();
+          generarMenuCompleto(true);
+        });
+      });
+    }
+
+    function mostrarModalEditarTiempo(tiempo) {
+      tiempoEditando = tiempo;
+      const modal = document.getElementById('modal-editar-tiempo');
+      const nombreInput = document.getElementById('editar-tiempo-nombre');
+      
+      nombreInput.value = tiempo;
+      renderizarEquivalenciasEditar(tiempo);
+      modal.classList.remove('hidden');
+    }
+
+    function renderizarEquivalenciasEditar(tiempo) {
+      const container = document.getElementById('equivalencias-editar');
+      const equivalencias = equivalenciasPersonalizadas[tiempo] || [];
+      
+      container.innerHTML = equivalencias.map((equiv, index) => `
+        <div class="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+          <select class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" data-index="${index}">
+            <option value="1">1</option>
+            <option value="2" ${equiv.cantidad === 2 ? 'selected' : ''}>2</option>
+            <option value="3" ${equiv.cantidad === 3 ? 'selected' : ''}>3</option>
+            <option value="4" ${equiv.cantidad === 4 ? 'selected' : ''}>4</option>
+            <option value="5" ${equiv.cantidad === 5 ? 'selected' : ''}>5</option>
+          </select>
+          <select class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" data-index="${index}" data-tipo="true">
+            ${tiposIngredientes.map(tipo => `
+              <option value="${tipo.id}" ${equiv.tipoId === tipo.id ? 'selected' : ''}>${tipo.nombre}</option>
+            `).join('')}
+          </select>
+          <button 
+            class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-semibold transition eliminar-equiv-editar"
+            data-index="${index}"
+          >
+            ×
+          </button>
+        </div>
+      `).join('');
+      
+      configurarEventListenersModalEditar();
+    }
+
+    function configurarEventListenersModalEditar() {
+      // Eliminar equivalencia
+      document.querySelectorAll('.eliminar-equiv-editar').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const index = parseInt(this.dataset.index);
+          equivalenciasPersonalizadas[tiempoEditando].splice(index, 1);
+          renderizarEquivalenciasEditar(tiempoEditando);
+        });
+      });
+
+      // Cambiar cantidad o tipo
+      document.querySelectorAll('#equivalencias-editar select').forEach(select => {
+        select.addEventListener('change', function() {
+          const index = parseInt(this.dataset.index);
+          const esTipo = this.dataset.tipo === 'true';
+          
+          if (esTipo) {
+            const tipoSeleccionado = tiposIngredientes.find(t => t.id === this.value);
+            equivalenciasPersonalizadas[tiempoEditando][index].tipoId = this.value;
+            const cantidad = equivalenciasPersonalizadas[tiempoEditando][index].cantidad;
+            equivalenciasPersonalizadas[tiempoEditando][index].nombre = `${cantidad} ${tipoSeleccionado.nombre.toLowerCase()}${cantidad > 1 ? 's' : ''}`;
+          } else {
+            const cantidad = parseInt(this.value);
+            equivalenciasPersonalizadas[tiempoEditando][index].cantidad = cantidad;
+            const tipoId = equivalenciasPersonalizadas[tiempoEditando][index].tipoId;
+            const tipoNombre = tiposIngredientes.find(t => t.id === tipoId).nombre.toLowerCase();
+            equivalenciasPersonalizadas[tiempoEditando][index].nombre = `${cantidad} ${tipoNombre}${cantidad > 1 ? 's' : ''}`;
+          }
+        });
+      });
+    }
+
     function generarMenuCompleto(nuevo = false) {
       if (nuevo) {
         ingredientesUsados.clear();
       }
       
-      tiemposComida.forEach(tiempo => {
+      tiemposPersonalizados.forEach(tiempo => {
         generarIngredientesParaTiempo(tiempo, nuevo);
       });
       
       setTimeout(configurarEventListeners, 100);
     }
 
+    function mostrarModalTiempos() {
+      const modal = document.getElementById('modal-tiempos');
+      renderizarListaTiemposPersonalizados();
+      modal.classList.remove('hidden');
+    }
+
+    function renderizarListaTiemposPersonalizados() {
+      const container = document.getElementById('lista-tiempos-personalizados');
+      container.innerHTML = tiemposPersonalizados.map((tiempo, index) => `
+        <div class="bg-gray-50 p-4 rounded-lg mb-3">
+          <div class="flex justify-between items-center mb-2">
+            <h4 class="font-semibold text-gray-900">${tiempo}</h4>
+            <button 
+              class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm eliminar-tiempo-modal"
+              data-tiempo="${tiempo}"
+            >
+              Eliminar
+            </button>
+          </div>
+          <div class="text-sm text-gray-600">
+            ${equivalenciasPersonalizadas[tiempo]?.map(equiv => equiv.nombre).join(', ') || 'Sin equivalencias'}
+          </div>
+        </div>
+      `).join('');
+      
+      // Configurar event listeners para eliminar tiempos
+      document.querySelectorAll('.eliminar-tiempo-modal').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const tiempo = this.dataset.tiempo;
+          tiemposPersonalizados = tiemposPersonalizados.filter(t => t !== tiempo);
+          delete equivalenciasPersonalizadas[tiempo];
+          renderizarListaTiemposPersonalizados();
+        });
+      });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      renderizarTablaTiempos();
       generarMenuCompleto(false);
       
       const botonNuevoMenu = document.getElementById('generar-nuevo-menu');
       if (botonNuevoMenu) {
         botonNuevoMenu.addEventListener('click', () => {
           generarMenuCompleto(true);
+        });
+      }
+
+      const botonGestionar = document.getElementById('gestionar-tiempos');
+      if (botonGestionar) {
+        botonGestionar.addEventListener('click', mostrarModalTiempos);
+      }
+
+      const agregarTiempo = document.getElementById('agregar-tiempo');
+      if (agregarTiempo) {
+        agregarTiempo.addEventListener('click', () => {
+          const nombreInput = document.getElementById('nuevo-tiempo-nombre');
+          const nombre = nombreInput.value.trim();
+          
+          if (nombre && !tiemposPersonalizados.includes(nombre)) {
+            tiemposPersonalizados.push(nombre);
+            equivalenciasPersonalizadas[nombre] = [
+              { tipoId: '1', nombre: '1 vegetal', cantidad: 1 }
+            ];
+            nombreInput.value = '';
+            renderizarListaTiemposPersonalizados();
+          }
+        });
+      }
+
+      const guardarCambios = document.getElementById('guardar-cambios');
+      if (guardarCambios) {
+        guardarCambios.addEventListener('click', () => {
+          document.getElementById('modal-tiempos').classList.add('hidden');
+          renderizarTablaTiempos();
+          generarMenuCompleto(true);
+        });
+      }
+
+      const cancelarCambios = document.getElementById('cancelar-cambios');
+      if (cancelarCambios) {
+        cancelarCambios.addEventListener('click', () => {
+          document.getElementById('modal-tiempos').classList.add('hidden');
+        });
+      }
+
+      const cerrarModal = document.getElementById('cerrar-modal');
+      if (cerrarModal) {
+        cerrarModal.addEventListener('click', () => {
+          document.getElementById('modal-tiempos').classList.add('hidden');
+        });
+      }
+
+      const cerrarModalEditar = document.getElementById('cerrar-modal-editar');
+      if (cerrarModalEditar) {
+        cerrarModalEditar.addEventListener('click', () => {
+          document.getElementById('modal-editar-tiempo').classList.add('hidden');
+          tiempoEditando = null;
+        });
+      }
+
+      const agregarEquivalenciaEditar = document.getElementById('agregar-equivalencia-editar');
+      if (agregarEquivalenciaEditar) {
+        agregarEquivalenciaEditar.addEventListener('click', () => {
+          if (!equivalenciasPersonalizadas[tiempoEditando]) {
+            equivalenciasPersonalizadas[tiempoEditando] = [];
+          }
+          equivalenciasPersonalizadas[tiempoEditando].push({
+            tipoId: '1',
+            nombre: '1 vegetal',
+            cantidad: 1
+          });
+          renderizarEquivalenciasEditar(tiempoEditando);
+        });
+      }
+
+      const guardarEditar = document.getElementById('guardar-editar');
+      if (guardarEditar) {
+        guardarEditar.addEventListener('click', function(e) {
+          e.preventDefault();
+          const nuevoNombre = document.getElementById('editar-tiempo-nombre').value.trim();
+          
+          if (nuevoNombre && nuevoNombre !== tiempoEditando) {
+            const index = tiemposPersonalizados.indexOf(tiempoEditando);
+            if (index !== -1) {
+              tiemposPersonalizados[index] = nuevoNombre;
+              equivalenciasPersonalizadas[nuevoNombre] = equivalenciasPersonalizadas[tiempoEditando];
+              delete equivalenciasPersonalizadas[tiempoEditando];
+            }
+          }
+          
+          document.getElementById('modal-editar-tiempo').classList.add('hidden');
+          renderizarTablaTiempos();
+          generarMenuCompleto(true);
+          tiempoEditando = null;
+        });
+      }
+
+      const cancelarEditar = document.getElementById('cancelar-editar');
+      if (cancelarEditar) {
+        cancelarEditar.addEventListener('click', function(e) {
+          e.preventDefault();
+          document.getElementById('modal-editar-tiempo').classList.add('hidden');
+          tiempoEditando = null;
         });
       }
     });
