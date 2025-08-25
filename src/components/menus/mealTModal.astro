@@ -1,0 +1,50 @@
+---
+import "../../styles/global.css";
+---
+
+<!-- Modal para gestionar tiempos de comida -->
+      <div id="modal-tiempos" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Gestionar Tiempos de Comida</h2>
+            <button id="cerrar-modal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-3">Agregar Nuevo Tiempo de Comida</h3>
+            <div class="flex gap-2 mb-4">
+              <input 
+                type="text" 
+                id="nuevo-tiempo-nombre" 
+                placeholder="Nombre del tiempo de comida"
+                class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+              <button 
+                id="agregar-tiempo"
+                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold transition"
+              >
+                Agregar
+              </button>
+            </div>
+          </div>
+          
+          <div id="lista-tiempos-personalizados">
+            <!-- Los tiempos personalizados aparecerán aquí -->
+          </div>
+          
+          <div class="flex justify-end gap-4 mt-6">
+            <button 
+              id="cancelar-cambios"
+              class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-semibold transition"
+            >
+              Cancelar
+            </button>
+            <button 
+              id="guardar-cambios"
+              class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold transition"
+            >
+              Guardar Cambios
+            </button>
+          </div>
+        </div>
+      </div>
