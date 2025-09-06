@@ -108,11 +108,6 @@ const tiposIngredientes = [
         <h1 class="text-3xl font-bold text-white mb-4">Menú Semanal Personalizado</h1>
         <div class="flex justify-center gap-4 flex-wrap">
           
-          {/* Botón para generar menú aleatorio */}
-          <RandomMenuButton />
-
-          {/* Botón para configurar tiempos de comida */}
-          <MealTimeConf />
 
         </div>
       </div>
@@ -189,17 +184,17 @@ const tiposIngredientes = [
     };
 
     // Paleta de colores por tipo de ingrediente (usa tailwind para ejemplo)
-    const bgColoresPorTipo = {
-      '1': 'bg-green-600 text-white',      // Vegetales
-      '2': 'bg-red-600 text-white',        // Origen Animal
-      '3': 'bg-red-600 text-white',        // Leguminosas (igual que Origen Animal)
-      '4': 'bg-blue-500 text-white',       // Frutas
-      '5': 'bg-purple-600 text-white',     // Cereales
-      '6': 'bg-yellow-400 text-black',     // Aceites y grasas
-      '7': 'bg-orange-500 text-white',     // Grasas con proteína
-      '8': 'bg-blue-200 text-black',       // Lácteos
-      '9': 'bg-gray-400 text-black'        // Azúcar
-    };
+const bgColoresPorTipo = {
+  '1': 'bg-green-600 text-white',      // Vegetales
+  '2': 'bg-red-600 text-white',        // Origen Animal
+  '3': 'bg-red-600 text-white',        // Leguminosas (igual que Origen Animal)
+  '4': 'bg-blue-500 text-white',       // Frutas
+  '5': 'bg-purple-600 text-white',     // Cereales
+  '6': 'bg-yellow-400 text-black',     // Aceites y grasas
+  '7': 'bg-orange-500 text-white',     // Grasas con proteína
+  '8': 'bg-blue-200 text-black',       // Lácteos
+  '9': 'bg-gray-400 text-black'        // Azúcar
+};
 
     // Mezcla aleatoriamente un arreglo (para ingredientes)
     function shuffleArray(array) {
@@ -447,7 +442,6 @@ const tiposIngredientes = [
                 `<option value="${tipo.id}" ${tipo.id === ing.tipoId ? 'selected' : ''}>${tipo.nombre}</option>`
               ).join('')}
             </select>
-            <span class="font-semibold text-xs">${ing.ingrediente?.nombre_Ingrediente || 'Sin ingrediente'}</span>
             <input type="number" min="1" class="porcion" data-idx="${idx}" value="${ing.porcion}" style="width:60px"/>
             <button class="eliminar-ingrediente bg-red-500 text-white px-2 py-1 rounded" data-idx="${idx}">X</button>
           </div>
@@ -571,48 +565,26 @@ const tiposIngredientes = [
     }
 
     // Obtiene todos los ingredientes actuales de la tabla en el momento
-    function obtenerIngredientesDeTabla() {
-      const ingredientes = [];
-      Array(7).fill(0).forEach((_, rowIdx) => {
-        Array(7).fill(0).forEach((_, colIdx) => {
-          const celdaId = `celda-${rowIdx}-${colIdx}`;
-          const datos = datosCeldasPersonalizadas[celdaId];
-          if (datos && Array.isArray(datos.ingredientes)) {
-            datos.ingredientes.forEach(ing => {
-              const cantidadTotal = (parseFloat(ing.porcion) || 1) * (parseFloat(ing.ingrediente.porcion_Ingrediente) || 1);
-              ingredientes.push(
-                `${datos.nombre ? datos.nombre + ': ' : ''}${ing.tipoNombre}: ${ing.ingrediente.nombre_Ingrediente} (${cantidadTotal} ${ing.ingrediente.unidad_Ingrediente})`
-              );
-            });
-          }
+function obtenerIngredientesDeTabla() {
+  const ingredientes = [];
+  Array(7).fill(0).forEach((_, rowIdx) => {
+    Array(7).fill(0).forEach((_, colIdx) => {
+      const celdaId = `celda-${rowIdx}-${colIdx}`;
+      const datos = datosCeldasPersonalizadas[celdaId];
+      if (datos && Array.isArray(datos.ingredientes)) {
+        datos.ingredientes.forEach(ing => {
+          const cantidadTotal = (parseFloat(ing.porcion) || 1) * (parseFloat(ing.ingrediente.porcion_Ingrediente) || 1);
+          ingredientes.push(
+            `${datos.nombre ? datos.nombre + ': ' : ''}${ing.tipoNombre}: ${ing.ingrediente.nombre_Ingrediente} (${cantidadTotal} ${ing.ingrediente.unidad_Ingrediente})`
+          );
         });
-      });
-      return ingredientes;
-    }
+      }
+    });
+  });
+  return ingredientes;
+}
 
-    // Función para exportar ingredientes a PDF
-    function exportarIngredientesPDF() {
-      // Usa la versión global de jsPDF
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFontSize(14);
-      doc.text('Lista de ingredientes del menú', 10, 10);
-
-      const ingredientes = obtenerIngredientesDeTabla();
-      let y = 20;
-      ingredientes.forEach((ing, idx) => {
-        doc.text(`${idx + 1}. ${ing}`, 10, y);
-        y += 8;
-        if (y > 280) {
-          doc.addPage();
-          y = 20;
-        }
-      });
-
-      doc.save('ingredientes-menu.pdf');
-    }
-
-    // Obtiene los ingredientes agrupados por día
+// Obtiene los ingredientes agrupados por día
 function obtenerIngredientesPorDia() {
   const ingredientesPorDia = {};
   diasSemana.forEach((dia, colIdx) => {
@@ -668,17 +640,9 @@ function exportarIngredientesPDF() {
 }
 
 // Event listener para el botón
-    document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
       renderizarTablaTiempos();
       generarMenuCompleto(false);
-      
-      // Botón para generar nuevo menú
-      const botonNuevoMenu = document.getElementById('generar-nuevo-menu');
-      if (botonNuevoMenu) {
-        botonNuevoMenu.addEventListener('click', () => {
-          generarMenuCompleto(true);
-        });
-      }
 
       const exportarBtn = document.getElementById('exportar-pdf');
       if (exportarBtn) {
