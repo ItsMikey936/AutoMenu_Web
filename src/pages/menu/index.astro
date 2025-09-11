@@ -345,6 +345,23 @@ const tiposIngredientes = [
     // Guarda los datos personalizados por celda
     let datosCeldasPersonalizadas = {};
 
+    // Cargar menú guardado al iniciar
+    function cargarMenuGuardado() {
+      const guardado = localStorage.getItem('menuPersonalizado');
+      if (guardado) {
+        try {
+          datosCeldasPersonalizadas = JSON.parse(guardado);
+        } catch (e) {
+          datosCeldasPersonalizadas = {};
+        }
+      }
+    }
+
+    // Guardar menú en localStorage
+    function guardarMenu() {
+      localStorage.setItem('menuPersonalizado', JSON.stringify(datosCeldasPersonalizadas));
+    }
+
     // Renderiza la tabla vacía
     function renderizarTablaTiempos() {
       const tbody = document.getElementById('tabla-tiempos');
@@ -491,6 +508,7 @@ const tiposIngredientes = [
           nombre: datos.nombre,
           ingredientes: datos.ingredientes.filter(ing => ing.ingrediente && ing.ingrediente.ingredient_ID)
         };
+        guardarMenu(); // <-- Agrega esta línea
         renderizarTablaTiempos();
         modal.style.display = 'none';
       };
@@ -658,6 +676,7 @@ function exportarIngredientesPDF() {
 
 // Event listener para el botón
     document.addEventListener('DOMContentLoaded', () => {
+      cargarMenuGuardado(); // <-- Agrega esta línea
       renderizarTablaTiempos();
       generarMenuCompleto(false);
       
