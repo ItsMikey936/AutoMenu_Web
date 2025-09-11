@@ -453,7 +453,6 @@ const tiposIngredientes = [
                 `<option value="${tipo.id}" ${tipo.id === ing.tipoId ? 'selected' : ''}>${tipo.nombre}</option>`
               ).join('')}
             </select>
-            <span class="font-semibold text-xs">${ing.ingrediente?.nombre_Ingrediente || 'Sin ingrediente'}</span>
             <input type="number" min="1" class="porcion" data-idx="${idx}" value="${ing.porcion}" style="width:60px"/>
             <button class="eliminar-ingrediente bg-red-500 text-white px-2 py-1 rounded" data-idx="${idx}">X</button>
           </div>
