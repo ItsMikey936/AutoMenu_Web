@@ -1,5 +1,4 @@
 ---
-// src/components/IngredientGroup.astro
 import { db } from '../../lib/db';
 
 const { ingType_ID, title } = Astro.props;
@@ -11,24 +10,28 @@ const ingredients = await db
   .execute();
 ---
 
-<div class="bg-white rounded-xl shadow-lg p-6">
-  <h2 class="text-xl font-semibold mb-4 text-gray-800 text-center">Desmarca los {title} que NO puedes conseguir</h2>
-  <!-- Added max height and scroll for long ingredient lists -->
-  <div class="max-h-64 overflow-y-auto">
-    <!-- Updated to 2-column grid layout for ingredients within each card -->
-    <div class="grid grid-cols-2 gap-2">
+<div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-md p-5 border border-gray-200">
+  <h2 class="text-lg sm:text-xl font-bold mb-4 text-purple-700 text-center">
+    Ingredientes: <span class="capitalize">{title}</span>
+  </h2>
+
+  <p class="text-xs text-gray-500 text-center mb-3">
+    Desmarca los que no puedes conseguir
+  </p>
+
+  <div class="max-h-56 overflow-y-auto pr-1">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {ingredients.map(ing => (
-        <label key={ing.ingredient_ID} class="flex items-center space-x-2 text-sm">
-          <!-- Added data-category attribute and checked by default -->
+        <label key={ing.ingredient_ID} class="flex items-center gap-2 text-sm text-gray-700 hover:bg-gray-100 px-2 py-1 rounded transition">
           <input 
             type="checkbox" 
             name="ingredients" 
             value={ing.ingredient_ID} 
             data-category={ingType_ID}
-            class="accent-green-600 h-4 w-4 rounded" 
+            class="accent-green-600 h-4 w-4 rounded focus:ring-2 focus:ring-green-400" 
             checked 
           />
-          <span class="text-gray-700">{ing.nombre_Ingrediente}</span>
+          <span class="truncate">{ing.nombre_Ingrediente}</span>
         </label>
       ))}
     </div>

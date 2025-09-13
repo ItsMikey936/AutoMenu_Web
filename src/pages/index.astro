@@ -4,254 +4,28 @@ import "../styles/global.css";
 ---
 
 <Layout>
-  <div class="bg-gradient-to-tr from-black to-purple-700 text-white py-8 text-center">
-    <h1 class="text-4xl font-bold mb-5">Menú Semanal</h1>
-    <button
-      id="generate-btn"
-      class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-full font-semibold text-base shadow-[0_4px_15px_rgba(76,175,80,0.3)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(76,175,80,0.4)] disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none"
-    >
-      Generar menú aleatorio
-    </button>
-  </div>
+  <main class="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-100 to-blue-200 text-gray-800 px-4">
+    
+    <!-- Banner motivacional -->
+    <section class="text-center mb-10">
+      <h1 class="text-5xl font-extrabold text-green-700 mb-4">Tu plan nutricional comienza aquí 🥦</h1>
+      <p class="text-lg text-gray-600 max-w-xl mx-auto">
+        Diseña tu menú ideal o comienza con una base recomendada. ¡Tú decides cómo nutrirte mejor!
+      </p>
+    </section>
 
-  <div id="week-counter" class="bg-gray-200 py-2 px-5 text-center font-semibold text-gray-700 border-b border-gray-300 hidden">
-    Semana <span id="current-week" class="font-bold text-gray-800">1</span> de 2
-  </div>
+    <!-- Botones de navegación -->
+    <div class="flex flex-col sm:flex-row gap-6">
+      <a href="/baseMenu" class="px-8 py-4 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white rounded-xl shadow-md hover:scale-105 transition transform font-semibold text-center">
+        Menú predeterminado
+      </a>
+      <a href="/selection" class="px-8 py-4 bg-gradient-to-r from-green-500 to-green-700 text-white rounded-xl shadow-md hover:scale-105 transition transform font-semibold text-center">
+        Personalizar menú
+      </a>
+    </div>
 
-  <div id="loading" class="text-center py-10 text-gray-500">Cargando ingredientes...</div>
-  <div id="error" class="bg-red-100 text-red-700 p-4 my-5 rounded border border-red-300 hidden"></div>
+    <!-- Imagen decorativa opcional -->
+    <!-- <img src="/fitness-banner.svg" alt="Fitness banner" class="mt-12 w-full max-w-md opacity-80" /> -->
 
-  <div class="overflow-x-auto hidden" id="table-container">
-  <div class="w-full max-w-full">
-    <table class="min-w-full table-auto border-collapse text-xs sm:text-sm md:text-base">
-      <thead class="bg-gray-100 text-gray-800 uppercase text-[0.7rem] sm:text-[0.85rem] tracking-wide">
-        <tr>
-          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">TIPO DE ALIMENTO</th>
-          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">LUNES</th>
-          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">MARTES</th>
-          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">MIÉRCOLES</th>
-          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">JUEVES</th>
-          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">VIERNES</th>
-          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">SÁBADO</th>
-          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">DOMINGO</th>
-          <th class="px-2 sm:px-3 py-3 sm:py-4 border-b border-gray-300">EQUIVALENCIAS</th>
-        </tr>
-      </thead>
-      <tbody id="menu-tbody" class="divide-y divide-gray-200">
-        <!-- Filas generadas dinámicamente -->
-      </tbody>
-    </table>
-  </div>
-
-  <div class="flex justify-center mt-6 sm:mt-8">
-    <a href="/selection" class="bg-purple-600 hover:bg-purple-700 text-white px-3 sm:px-4 py-2 rounded-full font-semibold transition text-xs sm:text-sm md:text-base">
-      Selecciona tus ingredientes
-    </a>
-  </div>
-</div>
-
-
-  <script>
-    // Configuración del menú
-    const MEAL_CONFIG = {
-      'Desayuno': [5, 4], // Cereales, Frutas
-      'Batido': [4, 8, 5, 7], // Frutas, Grasas con proteina, Cereales, Lacteos
-      'Almuerzo': [2, 1, 5, 8], // Origen animal, Vegetales, Cereales, Grasas con proteina
-      'Comida': [2, 1, 5, 6, 4], // Origen animal, Vegetales, Cereales, Aceites y grasas, Frutas
-      'Colación': [1, 8, 4], // Vegetales, Grasas con proteina, Frutas
-      'Cena': [4, 2, 5] // Frutas, Origen animal, Cereales
-    };
-
-    const EQUIVALENCIAS_CONFIG = {
-      'Desayuno': [
-        { tipo: 5, cantidad: 1, nombre: 'cereal' },
-        { tipo: 4, cantidad: 2, nombre: 'frutas' }
-      ],
-      'Batido': [
-        { tipo: 4, cantidad: 2, nombre: 'frutas' },
-        { tipo: 8, cantidad: 1, nombre: 'grasa con proteína' },
-        { tipo: 5, cantidad: 1, nombre: 'cereal' },
-        { tipo: 7, cantidad: 1, nombre: 'lácteo' }
-      ],
-      'Almuerzo': [
-        { tipo: 2, cantidad: 2, nombre: 'origen animal' },
-        { tipo: 1, cantidad: 1, nombre: 'vegetal' },
-        { tipo: 5, cantidad: 2, nombre: 'cereales' },
-        { tipo: 8, cantidad: 1, nombre: 'grasa con proteína' }
-      ],
-      'Comida': [
-        { tipo: 2, cantidad: 3, nombre: 'origen animal' },
-        { tipo: 1, cantidad: 2, nombre: 'vegetales' },
-        { tipo: 5, cantidad: 2, nombre: 'cereales' },
-        { tipo: 6, cantidad: 1, nombre: 'grasa y aceite' },
-        { tipo: 4, cantidad: 1, nombre: 'fruta' }
-      ],
-      'Colación': [
-        { tipo: 1, cantidad: 1, nombre: 'vegetal' },
-        { tipo: 8, cantidad: 1, nombre: 'grasa con proteína' },
-        { tipo: 4, cantidad: 1, nombre: 'fruta' }
-      ],
-      'Cena': [
-        { tipo: 4, cantidad: 2, nombre: 'frutas' },
-        { tipo: 2, cantidad: 3, nombre: 'origen animal' },
-        { tipo: 5, cantidad: 1, nombre: 'cereal' }
-      ]
-    };
-
-    const DAYS = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO', 'DOMINGO'];
-    let ingredientesPorTipo = {};
-    let ingredientesUsados = new Set();
-    let semanaActual = 1;
-    let maxSemanas = 2;
-
-    // Cargar ingredientes al iniciar
-    async function cargarIngredientes() {
-      try {
-        const response = await fetch('/api/ingredientes');
-        if (!response.ok) {
-          throw new Error(`Error HTTP: ${response.status}`);
-        }
-        
-        ingredientesPorTipo = await response.json();
-        
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('table-container').style.display = 'block';
-        document.getElementById('week-counter').style.display = 'block';
-        
-        generarTablaVacia();
-        
-      } catch (error) {
-        console.error('Error al cargar ingredientes:', error);
-        document.getElementById('loading').style.display = 'none';
-        const errorDiv = document.getElementById('error');
-        errorDiv.textContent = `Error al cargar los ingredientes: ${error.message}`;
-        errorDiv.style.display = 'block';
-      }
-    }
-
-    function generarTablaVacia() {
-      const tbody = document.getElementById('menu-tbody');
-      tbody.innerHTML = '';
-      
-      Object.keys(MEAL_CONFIG).forEach(meal => {
-        const row = document.createElement('tr');
-        
-        // Celda del tipo de comida
-        const mealCell = document.createElement('td');
-        mealCell.className = 'meal-type';
-        mealCell.textContent = meal;
-        row.appendChild(mealCell);
-        
-        // Celdas para cada día
-        DAYS.forEach(day => {
-          const dayCell = document.createElement('td');
-          dayCell.className = 'day-cell';
-          dayCell.id = `${meal}-${day}`;
-          row.appendChild(dayCell);
-        });
-        
-        // Celda de equivalencias
-        const equivCell = document.createElement('td');
-        equivCell.className = 'equivalencias-cell';
-        equivCell.innerHTML = generarEquivalenciasHTML(meal);
-        row.appendChild(equivCell);
-        
-        tbody.appendChild(row);
-      });
-    }
-
-    function generarEquivalenciasHTML(meal) {
-      const equivalencias = EQUIVALENCIAS_CONFIG[meal];
-      const colores = {
-        1: '#059669', 2: '#dc2626', 3: '#7c3aed', 4: '#f59e0b', 
-        5: '#2563eb', 6: '#ca8a04', 7: '#06b6d4', 8: '#ec4899', 9: '#6b7280'
-      };
-      
-      return equivalencias.map(equiv =>
-        `<div class="ingredient-item">
-          <div class="ingredient-bullet bullet-${equiv.tipo}" style="background-color: ${colores[equiv.tipo] || '#6b7280'}"></div>
-          <span class="ingredient-name tipo-${equiv.tipo}" style="color: ${colores[equiv.tipo] || '#6b7280'}; font-weight: 600;">${equiv.cantidad} ${equiv.nombre}</span>
-        </div>`
-      ).join('');
-    }
-
-    function seleccionarIngredienteAleatorio(tipoId) {
-      const ingredientesDisponibles = ingredientesPorTipo[tipoId]?.filter(
-        ing => !ingredientesUsados.has(ing.id_Ingrediente)
-      ) || [];
-      
-      if (ingredientesDisponibles.length === 0) {
-        // Si no hay ingredientes disponibles, usar cualquiera del tipo
-        const todosDelTipo = ingredientesPorTipo[tipoId] || [];
-        if (todosDelTipo.length === 0) return null;
-        return todosDelTipo[Math.floor(Math.random() * todosDelTipo.length)];
-      }
-      
-      const ingredienteSeleccionado = ingredientesDisponibles[
-        Math.floor(Math.random() * ingredientesDisponibles.length)
-      ];
-      
-      ingredientesUsados.add(ingredienteSeleccionado.id_Ingrediente);
-      return ingredienteSeleccionado;
-    }
-
-    function generarMenu() {
-      // Limpiar celdas de días
-      Object.keys(MEAL_CONFIG).forEach(meal => {
-        DAYS.forEach(day => {
-          const cell = document.getElementById(`${meal}-${day}`);
-          if (cell) cell.innerHTML = '';
-        });
-      });
-
-      // Generar menú para cada comida y día
-      Object.keys(MEAL_CONFIG).forEach(meal => {
-        const tiposRequeridos = MEAL_CONFIG[meal];
-        
-        DAYS.forEach(day => {
-          const cell = document.getElementById(`${meal}-${day}`);
-          if (!cell) return;
-          
-          const ingredientesDelDia = tiposRequeridos.map(tipoId => {
-            const ingrediente = seleccionarIngredienteAleatorio(tipoId);
-            return ingrediente ? {
-              ...ingrediente,
-              tipoId
-            } : null;
-          }).filter(Boolean);
-
-          cell.innerHTML = ingredientesDelDia.map(ing => {
-            const colores = {
-              1: '#059669', 2: '#dc2626', 3: '#7c3aed', 4: '#f59e0b', 
-              5: '#2563eb', 6: '#ca8a04', 7: '#06b6d4', 8: '#ec4899', 9: '#6b7280'
-            };
-            
-            return `<div class="ingredient-item">
-              <div class="ingredient-bullet bullet-${ing.tipoId}" style="background-color: ${colores[ing.tipoId] || '#6b7280'}"></div>
-              <span class="ingredient-name tipo-${ing.tipoId}" style="color: ${colores[ing.tipoId] || '#6b7280'}; font-weight: 600;">
-                ${ing.nombre_Ingrediente}
-              </span>
-            </div>`;
-          }).join('');
-        });
-      });
-
-      // Actualizar contador de semana
-      document.getElementById('current-week').textContent = semanaActual;
-      
-      // Incrementar semana
-      semanaActual++;
-      if (semanaActual > maxSemanas) {
-        // Reiniciar después de 2 semanas
-        semanaActual = 1;
-        ingredientesUsados.clear();
-      }
-    }
-
-    // Event listeners
-    document.getElementById('generate-btn').addEventListener('click', generarMenu);
-
-    // Cargar ingredientes al iniciar
-    document.addEventListener('DOMContentLoaded', cargarIngredientes);
-  </script>
+  </main>
 </Layout>

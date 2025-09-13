@@ -1,0 +1,265 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import "../../styles/global.css";
+---
+
+<Layout>
+  <!-- Encabezado compacto -->
+  <section class="bg-gradient-to-tr from-purple-800 to-indigo-700 text-white py-6 text-center shadow-sm">
+    <h1 class="text-3xl font-bold mb-2">Tu Menú Semanal 🍽️</h1>
+    <p class="text-sm text-purple-100">Planifica tu semana con energía y equilibrio</p>
+    <button
+      id="generate-btn"
+      class="mt-4 bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-full font-semibold text-sm shadow-md transition hover:-translate-y-0.5 hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+    >
+      Generar menú aleatorio
+    </button>
+  </section>
+
+  <!-- Semana -->
+  <div id="week-counter" class="bg-white py-2 px-4 text-center text-sm text-gray-700 border-b border-gray-300 hidden">
+    Semana <span id="current-week" class="font-bold text-indigo-700">1</span> de 2
+  </div>
+
+  <!-- Cargando / Error -->
+  <div id="loading" class="text-center py-6 text-gray-500 text-sm">Cargando ingredientes...</div>
+  <div id="error" class="bg-red-100 text-red-700 p-3 my-4 rounded border border-red-300 hidden text-sm"></div>
+
+  <!-- Tabla -->
+  <div class="overflow-x-auto hidden" id="table-container">
+    <div class="w-full px-4">
+      <table class="min-w-full table-auto border-collapse text-xs sm:text-sm bg-white shadow-sm rounded-md">
+        <thead class="bg-gray-100 text-gray-800 uppercase text-[0.65rem] sm:text-[0.75rem] tracking-wide">
+          <tr>
+            <th class="px-2 py-2 border-b border-gray-300">TIPO</th>
+            <th class="px-2 py-2 border-b border-gray-300">LUNES</th>
+            <th class="px-2 py-2 border-b border-gray-300">MARTES</th>
+            <th class="px-2 py-2 border-b border-gray-300">MIÉRCOLES</th>
+            <th class="px-2 py-2 border-b border-gray-300">JUEVES</th>
+            <th class="px-2 py-2 border-b border-gray-300">VIERNES</th>
+            <th class="px-2 py-2 border-b border-gray-300">SÁBADO</th>
+            <th class="px-2 py-2 border-b border-gray-300">DOMINGO</th>
+            <th class="px-2 py-2 border-b border-gray-300">EQ.</th>
+          </tr>
+        </thead>
+        <tbody id="menu-tbody" class="divide-y divide-gray-200">
+          <!-- Filas dinámicas -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CTA final -->
+    <div class="flex justify-center mt-6">
+      <a href="/selection" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full font-semibold text-sm shadow-sm transition">
+        Selecciona tus ingredientes
+      </a>
+    </div>
+  </div>
+
+
+
+
+  <script>
+    // Configuración del menú
+    const MEAL_CONFIG = {
+      'Desayuno': [5, 4], // Cereales, Frutas
+      'Batido': [4, 8, 5, 7], // Frutas, Grasas con proteina, Cereales, Lacteos
+      'Almuerzo': [2, 1, 5, 8], // Origen animal, Vegetales, Cereales, Grasas con proteina
+      'Comida': [2, 1, 5, 6, 4], // Origen animal, Vegetales, Cereales, Aceites y grasas, Frutas
+      'Colación': [1, 8, 4], // Vegetales, Grasas con proteina, Frutas
+      'Cena': [4, 2, 5] // Frutas, Origen animal, Cereales
+    };
+
+    const EQUIVALENCIAS_CONFIG = {
+      'Desayuno': [
+        { tipo: 5, cantidad: 1, nombre: 'cereal' },
+        { tipo: 4, cantidad: 2, nombre: 'frutas' }
+      ],
+      'Batido': [
+        { tipo: 4, cantidad: 2, nombre: 'frutas' },
+        { tipo: 8, cantidad: 1, nombre: 'grasa con proteína' },
+        { tipo: 5, cantidad: 1, nombre: 'cereal' },
+        { tipo: 7, cantidad: 1, nombre: 'lácteo' }
+      ],
+      'Almuerzo': [
+        { tipo: 2, cantidad: 2, nombre: 'origen animal' },
+        { tipo: 1, cantidad: 1, nombre: 'vegetal' },
+        { tipo: 5, cantidad: 2, nombre: 'cereales' },
+        { tipo: 8, cantidad: 1, nombre: 'grasa con proteína' }
+      ],
+      'Comida': [
+        { tipo: 2, cantidad: 3, nombre: 'origen animal' },
+        { tipo: 1, cantidad: 2, nombre: 'vegetales' },
+        { tipo: 5, cantidad: 2, nombre: 'cereales' },
+        { tipo: 6, cantidad: 1, nombre: 'grasa y aceite' },
+        { tipo: 4, cantidad: 1, nombre: 'fruta' }
+      ],
+      'Colación': [
+        { tipo: 1, cantidad: 1, nombre: 'vegetal' },
+        { tipo: 8, cantidad: 1, nombre: 'grasa con proteína' },
+        { tipo: 4, cantidad: 1, nombre: 'fruta' }
+      ],
+      'Cena': [
+        { tipo: 4, cantidad: 2, nombre: 'frutas' },
+        { tipo: 2, cantidad: 3, nombre: 'origen animal' },
+        { tipo: 5, cantidad: 1, nombre: 'cereal' }
+      ]
+    };
+
+    const DAYS = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO', 'DOMINGO'];
+    let ingredientesPorTipo = {};
+    let ingredientesUsados = new Set();
+    let semanaActual = 1;
+    let maxSemanas = 2;
+
+    // Cargar ingredientes al iniciar
+    async function cargarIngredientes() {
+      try {
+        const response = await fetch('/api/ingredientes');
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        
+        ingredientesPorTipo = await response.json();
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('table-container').style.display = 'block';
+        document.getElementById('week-counter').style.display = 'block';
+        
+        generarTablaVacia();
+        
+      } catch (error) {
+        console.error('Error al cargar ingredientes:', error);
+        document.getElementById('loading').style.display = 'none';
+        const errorDiv = document.getElementById('error');
+        errorDiv.textContent = `Error al cargar los ingredientes: ${error.message}`;
+        errorDiv.style.display = 'block';
+      }
+    }
+
+    function generarTablaVacia() {
+      const tbody = document.getElementById('menu-tbody');
+      tbody.innerHTML = '';
+      
+      Object.keys(MEAL_CONFIG).forEach(meal => {
+        const row = document.createElement('tr');
+        
+        // Celda del tipo de comida
+        const mealCell = document.createElement('td');
+        mealCell.className = 'meal-type';
+        mealCell.textContent = meal;
+        row.appendChild(mealCell);
+        
+        // Celdas para cada día
+        DAYS.forEach(day => {
+          const dayCell = document.createElement('td');
+          dayCell.className = 'day-cell';
+          dayCell.id = `${meal}-${day}`;
+          row.appendChild(dayCell);
+        });
+        
+        // Celda de equivalencias
+        const equivCell = document.createElement('td');
+        equivCell.className = 'equivalencias-cell';
+        equivCell.innerHTML = generarEquivalenciasHTML(meal);
+        row.appendChild(equivCell);
+        
+        tbody.appendChild(row);
+      });
+    }
+
+    function generarEquivalenciasHTML(meal) {
+      const equivalencias = EQUIVALENCIAS_CONFIG[meal];
+      const colores = {
+        1: '#059669', 2: '#dc2626', 3: '#7c3aed', 4: '#f59e0b', 
+        5: '#2563eb', 6: '#ca8a04', 7: '#06b6d4', 8: '#ec4899', 9: '#6b7280'
+      };
+      
+      return equivalencias.map(equiv =>
+        `<div class="ingredient-item">
+          <div class="ingredient-bullet bullet-${equiv.tipo}" style="background-color: ${colores[equiv.tipo] || '#6b7280'}"></div>
+          <span class="ingredient-name tipo-${equiv.tipo}" style="color: ${colores[equiv.tipo] || '#6b7280'}; font-weight: 600;">${equiv.cantidad} ${equiv.nombre}</span>
+        </div>`
+      ).join('');
+    }
+
+    function seleccionarIngredienteAleatorio(tipoId) {
+      const ingredientesDisponibles = ingredientesPorTipo[tipoId]?.filter(
+        ing => !ingredientesUsados.has(ing.id_Ingrediente)
+      ) || [];
+      
+      if (ingredientesDisponibles.length === 0) {
+        // Si no hay ingredientes disponibles, usar cualquiera del tipo
+        const todosDelTipo = ingredientesPorTipo[tipoId] || [];
+        if (todosDelTipo.length === 0) return null;
+        return todosDelTipo[Math.floor(Math.random() * todosDelTipo.length)];
+      }
+      
+      const ingredienteSeleccionado = ingredientesDisponibles[
+        Math.floor(Math.random() * ingredientesDisponibles.length)
+      ];
+      
+      ingredientesUsados.add(ingredienteSeleccionado.id_Ingrediente);
+      return ingredienteSeleccionado;
+    }
+
+    function generarMenu() {
+      // Limpiar celdas de días
+      Object.keys(MEAL_CONFIG).forEach(meal => {
+        DAYS.forEach(day => {
+          const cell = document.getElementById(`${meal}-${day}`);
+          if (cell) cell.innerHTML = '';
+        });
+      });
+
+      // Generar menú para cada comida y día
+      Object.keys(MEAL_CONFIG).forEach(meal => {
+        const tiposRequeridos = MEAL_CONFIG[meal];
+        
+        DAYS.forEach(day => {
+          const cell = document.getElementById(`${meal}-${day}`);
+          if (!cell) return;
+          
+          const ingredientesDelDia = tiposRequeridos.map(tipoId => {
+            const ingrediente = seleccionarIngredienteAleatorio(tipoId);
+            return ingrediente ? {
+              ...ingrediente,
+              tipoId
+            } : null;
+          }).filter(Boolean);
+
+          cell.innerHTML = ingredientesDelDia.map(ing => {
+            const colores = {
+              1: '#059669', 2: '#dc2626', 3: '#7c3aed', 4: '#f59e0b', 
+              5: '#2563eb', 6: '#ca8a04', 7: '#06b6d4', 8: '#ec4899', 9: '#6b7280'
+            };
+            
+            return `<div class="ingredient-item">
+              <div class="ingredient-bullet bullet-${ing.tipoId}" style="background-color: ${colores[ing.tipoId] || '#6b7280'}"></div>
+              <span class="ingredient-name tipo-${ing.tipoId}" style="color: ${colores[ing.tipoId] || '#6b7280'}; font-weight: 600;">
+                ${ing.nombre_Ingrediente}
+              </span>
+            </div>`;
+          }).join('');
+        });
+      });
+
+      // Actualizar contador de semana
+      document.getElementById('current-week').textContent = semanaActual;
+      
+      // Incrementar semana
+      semanaActual++;
+      if (semanaActual > maxSemanas) {
+        // Reiniciar después de 2 semanas
+        semanaActual = 1;
+        ingredientesUsados.clear();
+      }
+    }
+
+    // Event listeners
+    document.getElementById('generate-btn').addEventListener('click', generarMenu);
+
+    // Cargar ingredientes al iniciar
+    document.addEventListener('DOMContentLoaded', cargarIngredientes);
+  </script>
+</Layout>
