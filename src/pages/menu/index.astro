@@ -99,59 +99,58 @@ const tiposIngredientes = [
 ---
 
 <Layout>
-    <div class="h-screen flex flex-col" style="background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 50%, #000000 100%);">
-      <div class="text-center py-6 flex-shrink-0">
-        <h1 class="text-3xl font-bold text-white mb-4">Menú Semanal Personalizado</h1>
-      </div>
+<div class="h-screen grid grid-rows-[auto,1fr] bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
+  <!-- Encabezado compacto -->
+  <div class="text-center py-2">
+    <h1 class="text-xl font-bold text-white">Menú Semanal Personalizado</h1>
+  </div>
 
-      <div class="flex-1 px-4 pb-4 overflow-hidden">
-        <div class="flex justify-between mb-4">
-          <div class="flex gap-2">
-            <button 
-              id="agregar-fila"
-              class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold text-sm transition"
-            >
-              + Agregar Fila
-            </button>
-            <button 
-              id="eliminar-fila"
-              class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-semibold text-sm transition"
-            >
-              - Eliminar Fila
-            </button>
-          </div>
-          <button 
-            id="exportar-pdf"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold text-sm transition"
-          >
-            Exportar ingredientes a PDF
-          </button>
-        </div>
-        
-        <div class="h-full w-full bg-white rounded-lg shadow-xl overflow-hidden flex flex-col">
-          <!-- Contenedor responsivo de la tabla -->
-          <div class="overflow-x-auto w-full h-full">
-            <table class="w-full min-w-[800px] table-fixed">
-              <thead class="flex-shrink-0">
-                <tr class="bg-gray-100">
-                  <th class="px-2 py-2 text-center font-bold text-gray-800 border-r border-gray-300 text-xs w-20">
-                    FILA
-                  </th>
-                  {diasSemana.map(dia => (
-                    <th class="px-2 py-2 text-center font-bold text-gray-800 border-r border-gray-300 text-xs">
-                      {dia.toUpperCase()}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody class="flex-1" id="tabla-tiempos">
-                <!-- Las filas se generan dinámicamente -->
-              </tbody>
-            </table>
-          </div>
-        </div>
+  <!-- Contenido principal -->
+  <div class="px-4 pb-2 flex flex-col">
+    <!-- Botones -->
+    <div class="flex justify-between mb-2">
+      <div class="flex gap-2">
+        <button 
+          id="agregar-fila"
+          class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs font-semibold"
+        >
+          + Fila
+        </button>
+        <button 
+          id="eliminar-fila"
+          class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs font-semibold"
+        >
+          - Fila
+        </button>
       </div>
+      <button 
+        id="exportar-pdf"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs font-semibold"
+      >
+        Exportar PDF
+      </button>
     </div>
+
+    <!-- Tabla ajustada al espacio disponible -->
+    <div class="flex-1 bg-white rounded-lg shadow-lg flex items-center justify-center">
+      <table class="w-full h-full table-fixed text-[10px] leading-tight">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="px-1 py-1 text-center font-bold text-gray-800 border-r border-gray-300 w-12">FILA</th>
+            {diasSemana.map(dia => (
+              <th class="px-1 py-1 text-center font-bold text-gray-800 border-r border-gray-300">
+                {dia.toUpperCase()}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody id="tabla-tiempos">
+          <!-- Filas generadas dinámicamente -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
   <script define:vars={{ ingredientesPorTipo, tiemposComida, diasSemana, equivalentesPorTiempo, tiposIngredientes, horariosPorTiempo }}>
     // Variables globales para manejar las filas dinámicamente
