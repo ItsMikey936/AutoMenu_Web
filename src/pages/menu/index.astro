@@ -3,10 +3,6 @@
 import Layout from "../../layouts/Layout.astro";
 import "../../styles/global.css";
 import { db } from "../../lib/db.ts";
-import RandomMenuButton from "../../components/Buttons/randomMenuButton.astro";
-import MealTimeConf from "../../components/Buttons/mealTimeConf.astro";
-import MealTimeModal from "../../components/menus/mealTModal.astro";
-import MealTimeEditModal from "../../components/menus/mealTMEspecific.astro";
 
 // Obtiene los ingredientes seleccionados desde la URL
 const url = new URL(Astro.request.url);
@@ -630,7 +626,7 @@ function obtenerIngredientesPorDia() {
         datos.ingredientes.forEach(ing => {
           const cantidadTotal = (parseFloat(ing.porcion) || 1) * (parseFloat(ing.ingrediente.porcion_Ingrediente) || 1);
           ingredientesPorDia[dia].push(
-            `${datos.nombre ? datos.nombre + ': ' : ''}${ing.tipoNombre}: ${ing.ingrediente.nombre_Ingrediente} (${cantidadTotal} ${ing.ingrediente.unidad_Ingrediente})`
+            `${ing.ingrediente.nombre_Ingrediente} `
           );
         });
       }
@@ -639,12 +635,12 @@ function obtenerIngredientesPorDia() {
   return ingredientesPorDia;
 }
 
+
 // Función para exportar ingredientes a PDF agrupados por día
 function exportarIngredientesPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   doc.setFontSize(14);
-
   const ingredientesPorDia = obtenerIngredientesPorDia();
   let y = 15;
 
@@ -653,12 +649,13 @@ function exportarIngredientesPDF() {
     doc.text(dia, 10, y);
     y += 8;
     doc.setFont(undefined, 'normal');
+
     const ingredientes = ingredientesPorDia[dia];
     if (ingredientes.length === 0) {
       doc.text('Sin ingredientes', 15, y);
       y += 8;
     } else {
-      ingredientes.forEach((ing, idx) => {
+      ingredientes.forEach(ing => {
         doc.text(`- ${ing}`, 15, y);
         y += 8;
         if (y > 280) {
@@ -672,6 +669,7 @@ function exportarIngredientesPDF() {
 
   doc.save('ingredientes-menu.pdf');
 }
+
 
 // Event listener para el botón
     document.addEventListener('DOMContentLoaded', () => {
